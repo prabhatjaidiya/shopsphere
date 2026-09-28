@@ -132,3 +132,50 @@ Admin Login
 → Orders
 → Inventory
 → Customers
+
+## Frontend Architecture
+
+- React 19
+- Vite
+- TypeScript
+- Tailwind CSS v4
+- React Router DOM
+
+## Frontend Structure
+
+client/
+└── src/
+    ├── components/
+    ├── pages/
+    ├── layouts/
+    ├── hooks/
+    ├── services/
+    ├── context/
+    ├── types/
+    └── utils/
+
+## Shared Components
+
+- Navbar
+- Footer
+- Button
+- Input
+- Loader
+
+## Customer Layout
+
+CustomerLayout
+├── Navbar
+├── Outlet
+└── Footer
+
+## Customer Routes
+
+- /
+- /products
+- /products/:id
+- /cart
+- /checkout
+- /login
+- /register
+- /orders
