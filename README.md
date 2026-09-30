@@ -6,51 +6,51 @@ A full-stack e-commerce platform built with **React, Node.js, Express, TypeScrip
 
 ShopSphere is a realistic full-stack e-commerce application with two main sides:
 
-* 👤 Customer Store
-* 👨‍💼 Admin Dashboard
+- 👤 Customer Store
+- 👨‍💼 Admin Dashboard
 
 The project is being developed incrementally using a **28-day development roadmap**.
 
 ---
 
-## ✨ Planned Features
+# ✨ Planned Features
 
-### 👤 Customer
+## 👤 Customer
 
-* Product browsing
-* Product search
-* Product filtering
-* Product sorting
-* Product details
-* User registration and login
-* Shopping cart
-* Wishlist
-* Checkout
-* Test payment
-* Order history
-* Order status tracking
-* Product reviews
+- Product browsing
+- Product search
+- Product filtering
+- Product sorting
+- Product details
+- User registration and login
+- Shopping cart
+- Wishlist
+- Checkout
+- Test payment
+- Order history
+- Order status tracking
+- Product reviews
 
-### 👨‍💼 Admin
+## 👨‍💼 Admin
 
-* Admin authentication
-* Admin dashboard
-* Product CRUD
-* Category management
-* Inventory management
-* Order management
-* Customer management
-* Analytics dashboard
-* Coupon management
+- Admin authentication
+- Admin dashboard
+- Product CRUD
+- Category management
+- Inventory management
+- Order management
+- Customer management
+- Analytics dashboard
+- Coupon management
 
-### 🔐 Security
+## 🔐 Security
 
-* JWT authentication
-* bcrypt password hashing
-* Protected routes
-* Role-based authorization
-* Backend input validation
-* Environment variables for sensitive configuration
+- JWT authentication
+- bcrypt password hashing
+- Protected routes
+- Role-based authorization
+- Backend input validation
+- Environment variables for sensitive configuration
 
 > Most of these features are planned for later roadmap days and are not implemented yet.
 
@@ -68,7 +68,7 @@ Express Server
 Mongoose
       ↓
 MongoDB Atlas
-```
+````
 
 ### Request Flow
 
@@ -134,6 +134,7 @@ Client
 
 ```text
 shopsphere/
+
 │
 ├── client/
 │   └── React + Vite frontend
@@ -271,7 +272,7 @@ The goal of ShopSphere is to build a realistic full-stack e-commerce application
 
 ---
 
-## Day 4 — Customer Homepage 🚧
+## Day 4 — Customer Homepage ✅
 
 ### Homepage Sections
 
@@ -327,9 +328,85 @@ The goal of ShopSphere is to build a realistic full-stack e-commerce application
 
 ---
 
+# Day 5 — Product Listing Page ✅
+
+### Product Listing
+
+* [x] Build `/products` page
+* [x] Product grid
+* [x] Reuse `ProductCard`
+* [x] Product search
+* [x] Category filtering
+* [x] Price range filtering
+* [x] Product sorting
+* [x] Product count
+* [x] Empty state
+* [x] Responsive layout
+
+### Search
+
+* [x] Search products by name
+* [x] Case-insensitive search
+* [x] Display matching products
+* [x] Display empty state when no products match
+
+### Category Filtering
+
+* [x] All products
+* [x] Electronics
+* [x] Fashion
+* [x] Shoes
+* [x] Accessories
+
+### Price Filtering
+
+* [x] Minimum price filter
+* [x] Maximum price filter
+* [x] Prevent invalid minimum/maximum ranges
+* [x] Display selected price range
+
+### Sorting
+
+* [x] Popular
+* [x] Price: Low → High
+* [x] Price: High → Low
+* [x] Rating
+
+### Responsive Product Experience
+
+* [x] Desktop product layout
+* [x] Tablet product layout
+* [x] Mobile product layout
+* [x] Responsive filter controls
+* [x] Mobile filter panel
+* [x] Responsive category pills
+* [x] Responsive search and sorting controls
+* [x] Horizontal overflow prevention
+
+### UX Improvements
+
+* [x] Premium product listing layout
+* [x] Filter sidebar
+* [x] Mobile filter toggle
+* [x] Sticky desktop filter sidebar
+* [x] Product result count
+* [x] Reset filters
+* [x] Empty product state
+* [x] Product card hover effects
+
+### Current Data
+
+The product listing currently uses **mock/static product data**.
+
+Backend API integration will be added in later roadmap days.
+
+**Status:** Completed
+
+---
+
 # 📚 Documentation
 
-### UI/UX Design
+## UI/UX Design
 
 The UI/UX direction, design system, responsive strategy, and interface states are documented in:
 
@@ -337,7 +414,7 @@ The UI/UX direction, design system, responsive strategy, and interface states ar
 docs/UI-DESIGN.md
 ```
 
-### Homepage
+## Homepage
 
 The Day 4 homepage includes:
 
@@ -351,7 +428,27 @@ Featured Products
 Promotional Banner
 ```
 
-Current product and category information uses **mock/static data**.
+## Product Listing
+
+The Day 5 product listing includes:
+
+```text
+Product Listing
+      ↓
+Search
+      ↓
+Category Filter
+      ↓
+Price Filter
+      ↓
+Sorting
+      ↓
+Product Grid
+      ↓
+Empty State
+```
+
+Current product information uses **mock/static data**.
 
 Backend API integration will be added in later roadmap days.
 
@@ -360,10 +457,11 @@ Backend API integration will be added in later roadmap days.
 # 📊 Project Status
 
 * **Project:** In Progress
-* **Overall Progress:** **4/28 Days — 14.29%**
-* **Current Day:** **Day 4 — Customer Homepage**
-* **Day 4 Status:** **Completed**
-* **Next:** **Day 5 — Continue according to the 28-day roadmap**
+* **Overall Progress:** **5/28 Days — 17.86%**
+* **Current Day:** **Day 5 — Product Listing Page**
+* **Day 5 Status:** **Completed**
+* **Completed Days:** **1–5**
+* **Next:** **Day 6 — Continue according to the 28-day roadmap**
 
 ---
 
@@ -378,7 +476,11 @@ Frontend Foundation
        ↓
 Homepage UI
        ↓
-Product UI
+Product Listing UI
+       ↓
+Product Details
+       ↓
+Cart
        ↓
 Backend API
        ↓
@@ -395,7 +497,22 @@ Testing
 Deployment
 ```
 
-The homepage currently uses mock data so that the UI and component architecture can be completed independently from the backend implementation.
+The current customer-facing product pages use mock data so that UI, filtering, sorting, and component architecture can be completed independently from backend implementation.
+
+---
+
+# 📈 Current Progress
+
+```text
+Day 1  ████████████████████  Completed
+Day 2  ████████████████████  Completed
+Day 3  ████████████████████  Completed
+Day 4  ████████████████████  Completed
+Day 5  ████████████████████  Completed
+
+Overall
+█████░░░░░░░░░░░░░░░░░░░  17.86%
+```
 
 ---
 
@@ -404,3 +521,5 @@ The homepage currently uses mock data so that the UI and component architecture 
 **Prabhat Jaidiya**
 
 Building ShopSphere as a practical full-stack e-commerce project while developing skills in React, TypeScript, Node.js, Express, MongoDB, and modern full-stack development.
+
+````
