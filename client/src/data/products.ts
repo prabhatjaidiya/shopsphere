@@ -4,6 +4,12 @@ export interface Product {
   category: string;
   price: number;
   rating: number;
+
+  // Product Details fields
+  description?: string;
+  stock?: number;
+  image?: string;
+  images?: string[];
 }
 
 export const products: Product[] = [

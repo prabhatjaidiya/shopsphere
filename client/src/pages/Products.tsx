@@ -409,6 +409,7 @@ const Products = () => {
                   {sortedProducts.map((product) => (
                     <div key={product.id} className="min-w-0 max-w-full">
                       <ProductCard
+                        id={product.id}
                         name={product.name}
                         price={product.price}
                         rating={product.rating}

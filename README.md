@@ -1,21 +1,21 @@
 # 🛒 ShopSphere
 
-A full-stack e-commerce platform built with **React, Node.js, Express, TypeScript, MongoDB, and Mongoose**.
+A full-stack e-commerce platform being built with **React, Node.js, Express, TypeScript, MongoDB, and Mongoose**.
 
 ## 📌 Overview
 
-ShopSphere is a realistic full-stack e-commerce application with two main sides:
+ShopSphere is a practical e-commerce application with two main areas:
 
 - 👤 Customer Store
 - 👨‍💼 Admin Dashboard
 
-The project is being developed incrementally using a **28-day development roadmap**.
+The project is being developed incrementally using a **28-day development roadmap**. The customer-facing frontend is currently being built with mock data before backend API integration.
 
 ---
 
-# ✨ Planned Features
+## ✨ Planned Features
 
-## 👤 Customer
+### 👤 Customer
 
 - Product browsing
 - Product search
@@ -31,7 +31,7 @@ The project is being developed incrementally using a **28-day development roadma
 - Order status tracking
 - Product reviews
 
-## 👨‍💼 Admin
+### 👨‍💼 Admin
 
 - Admin authentication
 - Admin dashboard
@@ -43,7 +43,7 @@ The project is being developed incrementally using a **28-day development roadma
 - Analytics dashboard
 - Coupon management
 
-## 🔐 Security
+### 🔐 Planned Security
 
 - JWT authentication
 - bcrypt password hashing
@@ -52,11 +52,13 @@ The project is being developed incrementally using a **28-day development roadma
 - Backend input validation
 - Environment variables for sensitive configuration
 
-> Most of these features are planned for later roadmap days and are not implemented yet.
+> Most features above are planned for later roadmap days and are not implemented yet.
 
 ---
 
-# 🏗️ Architecture
+## 🏗️ Architecture
+
+Planned application architecture:
 
 ```text
 React Frontend
@@ -68,7 +70,7 @@ Express Server
 Mongoose
       ↓
 MongoDB Atlas
-````
+```
 
 ### Request Flow
 
@@ -92,59 +94,54 @@ Client
 
 ---
 
-# 🛠️ Tech Stack
+## 🛠️ Tech Stack
 
-## Frontend
+### Frontend
 
-* React
-* Vite
-* TypeScript
-* Tailwind CSS
-* React Router
-* TanStack Query
+- React
+- Vite
+- TypeScript
+- Tailwind CSS
+- React Router
+- TanStack Query
 
-## Backend
+### Backend
 
-* Node.js
-* Express
-* TypeScript
-* REST API
+- Node.js
+- Express
+- TypeScript
+- REST API
 
-## Database
+### Database
 
-* MongoDB Atlas
-* Mongoose
+- MongoDB Atlas
+- Mongoose
 
-## Authentication
+### Authentication
 
-* JWT
-* bcrypt
-* Role-based authorization
+- JWT
+- bcrypt
+- Role-based authorization
 
-## Other Tools
+### Other Tools
 
-* Git
-* GitHub
-* Cloudinary
-* Test payment integration
+- Git
+- GitHub
+- Cloudinary (planned)
+- Test payment integration (planned)
 
 ---
 
-# 📁 Project Structure
+## 📁 Project Structure
 
 ```text
 shopsphere/
-
-│
 ├── client/
 │   └── React + Vite frontend
-│
 ├── server/
 │   └── Node.js + Express backend
-│
 ├── docs/
 │   └── UI-DESIGN.md
-│
 ├── README.md
 ├── .gitignore
 └── package.json
@@ -152,21 +149,21 @@ shopsphere/
 
 ---
 
-# 🎯 Project Goals
+## 🎯 Project Goals
 
 The goal of ShopSphere is to build a realistic full-stack e-commerce application while practicing:
 
-* React application architecture
-* Reusable component development
-* REST API development
-* Authentication and authorization
-* MongoDB data modeling
-* E-commerce business logic
-* Admin functionality
-* API integration
-* Responsive UI development
-* Production deployment
-* Full-stack project organization
+- React application architecture
+- Reusable component development
+- REST API development
+- Authentication and authorization
+- MongoDB data modeling
+- E-commerce business logic
+- Admin functionality
+- API integration
+- Responsive UI development
+- Production deployment
+- Full-stack project organization
 
 ---
 
@@ -176,15 +173,15 @@ The goal of ShopSphere is to build a realistic full-stack e-commerce application
 
 ### Completed
 
-* [x] Define project requirements
-* [x] Define customer user flow
-* [x] Define admin user flow
-* [x] Plan application architecture
-* [x] Create GitHub repository
-* [x] Initialize React frontend
-* [x] Initialize Node.js backend
-* [x] Create README
-* [x] Initial Git commit
+- [x] Define project requirements
+- [x] Define customer user flow
+- [x] Define admin user flow
+- [x] Plan application architecture
+- [x] Create GitHub repository
+- [x] Initialize React frontend
+- [x] Initialize Node.js backend
+- [x] Create README
+- [x] Initial Git commit
 
 **Status:** Completed
 
@@ -194,39 +191,31 @@ The goal of ShopSphere is to build a realistic full-stack e-commerce application
 
 ### Customer UI Planning
 
-* [x] Homepage structure
-* [x] Product listing page
-* [x] Product details page
-* [x] Cart page
-* [x] Checkout flow
-* [x] Login/Register screens
+- [x] Homepage structure
+- [x] Product listing page
+- [x] Product details page
+- [x] Cart page
+- [x] Checkout flow
+- [x] Login/Register screens
 
 ### Admin UI Planning
 
-* [x] Admin dashboard
-* [x] Product management
-* [x] Order management
-* [x] Inventory management
-* [x] Customer management
-* [x] Analytics structure
+- [x] Admin dashboard
+- [x] Product management
+- [x] Order management
+- [x] Inventory management
+- [x] Customer management
+- [x] Analytics structure
 
-### Design System
+### Design System & Documentation
 
-* [x] Typography system
-* [x] Color system
-* [x] Spacing system
-* [x] Button styles
-* [x] Input styles
-* [x] Product card structure
-* [x] Status badges
-* [x] Responsive design strategy
-* [x] Loading, empty, success and error states
-
-### Documentation
-
-* [x] Document UI/UX decisions
-* [x] Create `docs/UI-DESIGN.md`
-* [x] Commit and push UI design documentation
+- [x] Typography, color, and spacing systems
+- [x] Button and input styles
+- [x] Product card structure and status badges
+- [x] Responsive design strategy
+- [x] Loading, empty, success, and error states
+- [x] Document UI/UX decisions in `docs/UI-DESIGN.md`
+- [x] Commit and push UI design documentation
 
 **Status:** Completed
 
@@ -236,37 +225,31 @@ The goal of ShopSphere is to build a realistic full-stack e-commerce application
 
 ### Frontend Foundation
 
-* [x] React + Vite setup
-* [x] TypeScript configuration
-* [x] Tailwind CSS setup
-* [x] React Router setup
-* [x] TanStack Query setup
+- [x] React + Vite setup
+- [x] TypeScript configuration
+- [x] Tailwind CSS setup
+- [x] React Router setup
+- [x] TanStack Query setup
 
-### Reusable Components
+### Reusable Components & Layout
 
-* [x] Button
-* [x] Input
-* [x] Loader
-* [x] Navbar
-* [x] Footer
-
-### Customer Layout
-
-* [x] CustomerLayout
-* [x] Navbar integration
-* [x] Footer integration
-* [x] React Router Outlet
+- [x] Shared UI components and reusable component foundation
+- [x] Navbar
+- [x] Footer
+- [x] `CustomerLayout`
+- [x] Navbar and Footer integration
+- [x] React Router `Outlet`
 
 ### Customer Routes
 
-* [x] `/`
-* [x] `/products`
-* [x] `/products/:id`
-* [x] `/cart`
-* [x] `/checkout`
-* [x] `/login`
-* [x] `/register`
-* [x] `/orders`
+- [x] `/`
+- [x] `/products`
+- [x] `/products/:id`
+- [x] `/cart`
+- [x] `/checkout`
+- [x] `/login`
+- [x] `/register`
+- [x] `/orders`
 
 **Status:** Completed
 
@@ -276,147 +259,34 @@ The goal of ShopSphere is to build a realistic full-stack e-commerce application
 
 ### Homepage Sections
 
-* [x] Hero section
-* [x] Category section
-* [x] Featured products
-* [x] Promotional banner
-* [x] Responsive homepage layout
+- [x] Hero section
+- [x] Category section
+- [x] Featured products
+- [x] Promotional banner
+- [x] Responsive homepage layout
 
-### Reusable Homepage Components
+### Reusable Components & Mock Data
 
-* [x] `HeroSection`
-* [x] `CategorySection`
-* [x] `CategoryCard`
-* [x] `FeaturedProducts`
-* [x] `ProductCard`
-* [x] `PromoBanner`
+- [x] `HeroSection`
+- [x] `CategorySection`
+- [x] `CategoryCard`
+- [x] `FeaturedProducts`
+- [x] `ProductCard`
+- [x] `PromoBanner`
+- [x] Mock category data
+- [x] Mock product data
 
-### Mock Data
+### Responsive UI & Navigation
 
-* [x] Mock category data
-* [x] Mock product data
-* [x] Product card rendering with mock data
-* [x] Category card rendering with mock data
-
-### Responsive UI
-
-* [x] Desktop layout
-* [x] Tablet layout
-* [x] Mobile layout
-* [x] Responsive product grid
-* [x] Responsive category grid
-* [x] Responsive hero section
-* [x] Responsive promotional banner
-
-### Navigation
-
-* [x] Homepage navigation
-* [x] Product navigation
-* [x] Cart navigation
-* [x] Orders navigation
-* [x] Login navigation
-* [x] Register navigation
-
-### Testing
-
-* [x] Homepage UI testing
-* [x] Responsive testing
-* [x] Navigation testing
-* [x] Console/error checking
+- [x] Desktop, tablet, and mobile layouts
+- [x] Responsive product and category grids
+- [x] Responsive hero and promotional banner
+- [x] Homepage, product, cart, orders, login, and register navigation
+- [x] Homepage UI, responsive layout, navigation, and console/error checks
 
 **Status:** Completed
 
----
-
-# Day 5 — Product Listing Page ✅
-
-### Product Listing
-
-* [x] Build `/products` page
-* [x] Product grid
-* [x] Reuse `ProductCard`
-* [x] Product search
-* [x] Category filtering
-* [x] Price range filtering
-* [x] Product sorting
-* [x] Product count
-* [x] Empty state
-* [x] Responsive layout
-
-### Search
-
-* [x] Search products by name
-* [x] Case-insensitive search
-* [x] Display matching products
-* [x] Display empty state when no products match
-
-### Category Filtering
-
-* [x] All products
-* [x] Electronics
-* [x] Fashion
-* [x] Shoes
-* [x] Accessories
-
-### Price Filtering
-
-* [x] Minimum price filter
-* [x] Maximum price filter
-* [x] Prevent invalid minimum/maximum ranges
-* [x] Display selected price range
-
-### Sorting
-
-* [x] Popular
-* [x] Price: Low → High
-* [x] Price: High → Low
-* [x] Rating
-
-### Responsive Product Experience
-
-* [x] Desktop product layout
-* [x] Tablet product layout
-* [x] Mobile product layout
-* [x] Responsive filter controls
-* [x] Mobile filter panel
-* [x] Responsive category pills
-* [x] Responsive search and sorting controls
-* [x] Horizontal overflow prevention
-
-### UX Improvements
-
-* [x] Premium product listing layout
-* [x] Filter sidebar
-* [x] Mobile filter toggle
-* [x] Sticky desktop filter sidebar
-* [x] Product result count
-* [x] Reset filters
-* [x] Empty product state
-* [x] Product card hover effects
-
-### Current Data
-
-The product listing currently uses **mock/static product data**.
-
-Backend API integration will be added in later roadmap days.
-
-**Status:** Completed
-
----
-
-# 📚 Documentation
-
-## UI/UX Design
-
-The UI/UX direction, design system, responsive strategy, and interface states are documented in:
-
-```text
-docs/UI-DESIGN.md
-```
-
-## Homepage
-
-The Day 4 homepage includes:
+### Homepage Flow
 
 ```text
 Hero
@@ -428,9 +298,47 @@ Featured Products
 Promotional Banner
 ```
 
-## Product Listing
+---
 
-The Day 5 product listing includes:
+## Day 5 — Product Listing Page ✅
+
+### Product Listing
+
+- [x] Build `/products` page
+- [x] Product grid using reusable `ProductCard`
+- [x] Product search
+- [x] Category filtering
+- [x] Minimum and maximum price filtering
+- [x] Product sorting
+- [x] Product result count
+- [x] Empty state
+- [x] Responsive layout
+
+### Search, Filtering & Sorting
+
+- [x] Case-insensitive product-name search
+- [x] Display matching products and an empty state
+- [x] All products, Electronics, Fashion, Shoes, and Accessories filters
+- [x] Minimum and maximum price filters
+- [x] Prevent invalid minimum/maximum ranges
+- [x] Display selected price range
+- [x] Popular, price low-to-high, price high-to-low, and rating sorting
+
+### Responsive UX
+
+- [x] Desktop, tablet, and mobile product layouts
+- [x] Responsive filter controls and mobile filter panel
+- [x] Responsive category pills, search, and sorting controls
+- [x] Horizontal overflow prevention
+- [x] Filter sidebar and sticky desktop filter sidebar
+- [x] Reset filters and empty product state
+- [x] Product card hover effects
+
+**Data source:** The listing uses mock/static product data. Backend API integration is planned for a later roadmap stage.
+
+**Status:** Completed
+
+### Product Listing Flow
 
 ```text
 Product Listing
@@ -443,33 +351,95 @@ Price Filter
       ↓
 Sorting
       ↓
-Product Grid
-      ↓
-Empty State
+Product Grid / Empty State
 ```
 
-Current product information uses **mock/static data**.
+---
 
-Backend API integration will be added in later roadmap days.
+## Day 6 — Product Details Page ✅
+
+### Product Details
+
+- [x] Build the product details page for `/products/:id`
+- [x] Read the product ID using React Router's `useParams`
+- [x] Find the matching product in mock data
+- [x] Handle invalid IDs and products that cannot be found
+- [x] Display product name, category, rating, and price
+- [x] Display stock status using the available mock data/default
+- [x] Add quantity increase/decrease controls with minimum and stock limits
+- [x] Calculate total price from unit price and quantity
+- [x] Add product image/gallery UI with a fallback when images are unavailable
+- [x] Add wishlist toggle UI
+- [x] Add temporary Add to Cart feedback
+- [x] Link product cards to the matching details route using React Router `Link`
+- [x] Add scroll-to-top behavior when the route changes
+- [x] Improve responsive spacing for mobile layouts
+- [x] Configure the customer layout as a flex column so the footer stays at the bottom on short pages and follows content on long pages
+
+### Testing & Build
+
+- [x] Test product details and navigation
+- [x] Check invalid product IDs
+- [x] Check quantity and total-price behavior
+- [x] Check stock-related button states
+- [x] Check wishlist and Add to Cart UI interactions
+- [x] Review responsive layout and footer behavior
+- [x] Frontend production build completed successfully with `tsc -b && vite build`
+
+**Important implementation notes:**
+
+- Product details still use mock/static data; no product API integration has been completed as part of this day.
+- The current mock products do not include image URLs or descriptions, so the page uses its fallback UI/text until those fields are supplied.
+- Add to Cart currently provides temporary feedback only; it does not yet save items to a shared or persistent cart.
+- Wishlist state is local to the product details component and is not persistent.
+
+**Status:** Completed
 
 ---
 
-# 📊 Project Status
+## 📚 Documentation
 
-* **Project:** In Progress
-* **Overall Progress:** **5/28 Days — 17.86%**
-* **Current Day:** **Day 5 — Product Listing Page**
-* **Day 5 Status:** **Completed**
-* **Completed Days:** **1–5**
-* **Next:** **Day 6 — Continue according to the 28-day roadmap**
+### UI/UX Design
+
+The UI/UX direction, design system, responsive strategy, and interface states are documented in:
+
+```text
+docs/UI-DESIGN.md
+```
+
+### Current Data Strategy
+
+The homepage, product listing, and product details currently use mock/static product or category data. Backend API integration will be added in later roadmap days.
 
 ---
 
-# 🚀 Current Development Philosophy
+## 📊 Project Status
 
-ShopSphere is being developed incrementally.
+- **Project:** In Progress
+- **Overall progress:** **6/28 days — 21.43%**
+- **Completed days:** **1–6**
+- **Current milestone:** Day 6 — Product Details Page (completed)
+- **Next milestone:** **Day 7 — Cart & Frontend Review**
 
-The current priority is to establish a strong frontend foundation before connecting the application to real backend data.
+### Progress Tracker
+
+```text
+Day 1  ████████████████████  Completed
+Day 2  ████████████████████  Completed
+Day 3  ████████████████████  Completed
+Day 4  ████████████████████  Completed
+Day 5  ████████████████████  Completed
+Day 6  ████████████████████  Completed
+
+Overall
+██████░░░░░░░░░░░░░░░░░░░░  21.43%
+```
+
+---
+
+## 🚀 Development Approach
+
+ShopSphere is being developed incrementally, completing and reviewing the frontend foundation before integrating real backend data and e-commerce workflows.
 
 ```text
 Frontend Foundation
@@ -480,11 +450,11 @@ Product Listing UI
        ↓
 Product Details
        ↓
-Cart
+Cart & Frontend Review
        ↓
 Backend API
        ↓
-Database
+Database Integration
        ↓
 Authentication
        ↓
@@ -497,29 +467,12 @@ Testing
 Deployment
 ```
 
-The current customer-facing product pages use mock data so that UI, filtering, sorting, and component architecture can be completed independently from backend implementation.
+The exact implementation sequence will follow the 28-day roadmap. Planned features should not be considered implemented until their roadmap tasks are completed.
 
 ---
 
-# 📈 Current Progress
-
-```text
-Day 1  ████████████████████  Completed
-Day 2  ████████████████████  Completed
-Day 3  ████████████████████  Completed
-Day 4  ████████████████████  Completed
-Day 5  ████████████████████  Completed
-
-Overall
-█████░░░░░░░░░░░░░░░░░░░  17.86%
-```
-
----
-
-# 👨‍💻 Developer
+## 👨‍💻 Developer
 
 **Prabhat Jaidiya**
 
 Building ShopSphere as a practical full-stack e-commerce project while developing skills in React, TypeScript, Node.js, Express, MongoDB, and modern full-stack development.
-
-````
