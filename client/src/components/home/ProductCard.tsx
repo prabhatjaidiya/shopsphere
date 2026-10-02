@@ -1,4 +1,7 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import { products } from "../../data/products";
+import { useCart } from "../../context/CartContext";
 
 interface ProductCardProps {
     id: number;
@@ -13,14 +16,20 @@ const ProductCard = ({
     price,
     rating,
 }: ProductCardProps) => {
+    const { addToCart } = useCart();
+    const [cartMessage, setCartMessage] = useState("");
+
+    const product = products.find((item) => item.id === id);
+
     const handleAddToCart = () => {
-        // Temporary interaction for Day 6
-        alert(`${name} added to cart!`);
+        if (!product) return;
+
+        addToCart(product, 1);
+        setCartMessage(`${product.name} added to your cart!`);
     };
 
     return (
         <article className="group flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg">
-            {/* Product Image */}
             <Link
                 to={`/products/${id}`}
                 aria-label={`View details for ${name}`}
@@ -33,7 +42,6 @@ const ProductCard = ({
                 </div>
             </Link>
 
-            {/* Product Information */}
             <div className="flex flex-1 flex-col p-4 sm:p-5">
                 <Link
                     to={`/products/${id}`}
@@ -44,7 +52,6 @@ const ProductCard = ({
                     </h3>
                 </Link>
 
-                {/* Rating */}
                 <div className="mt-2 flex items-center gap-1 text-sm">
                     <span className="text-amber-500">★</span>
                     <span className="font-medium text-gray-700">
@@ -52,20 +59,28 @@ const ProductCard = ({
                     </span>
                 </div>
 
-                {/* Price */}
                 <p className="mt-3 text-lg font-bold text-gray-900 sm:text-xl">
                     ₹{price.toLocaleString("en-IN")}
                 </p>
 
-                {/* Actions */}
                 <div className="mt-auto pt-4">
                     <button
                         type="button"
                         onClick={handleAddToCart}
-                        className="block w-full rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-gray-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+                        disabled={!product}
+                        className="block w-full rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
                     >
                         Add to Cart
                     </button>
+
+                    {cartMessage && (
+                        <p
+                            role="status"
+                            className="mt-2 text-sm text-green-700"
+                        >
+                            {cartMessage}
+                        </p>
+                    )}
 
                     <Link
                         to={`/products/${id}`}

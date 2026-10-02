@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { products } from "../data/products";
+import { useCart } from "../context/CartContext";
 
 const ProductDetails = () => {
   const { id } = useParams<{ id: string }>();
 
   // Find product using the numeric ID from the URL
   const productId = Number(id);
+
+  const { addToCart } = useCart();
 
   const product = products.find(
     (item) => item.id === productId
@@ -73,8 +76,8 @@ const ProductDetails = () => {
   const handleAddToCart = () => {
     if (isOutOfStock) return;
 
-    // Temporary interaction for Day 6.
-    // Real cart state/context will be integrated later.
+    addToCart(product, quantity);
+
     setCartMessage(
       `${quantity} × ${product.name} added to your cart!`
     );
@@ -140,8 +143,8 @@ const ProductDetails = () => {
                 }
                 aria-pressed={isWishlisted}
                 className={`absolute right-4 top-4 flex h-11 w-11 items-center justify-center rounded-full bg-white text-xl shadow-sm transition hover:scale-110 ${isWishlisted
-                    ? "text-red-500"
-                    : "text-gray-500"
+                  ? "text-red-500"
+                  : "text-gray-500"
                   }`}
               >
                 {isWishlisted ? "♥" : "♡"}
@@ -159,8 +162,8 @@ const ProductDetails = () => {
                     aria-label={`View product image ${index + 1}`}
                     aria-pressed={selectedImage === index}
                     className={`h-20 w-20 shrink-0 overflow-hidden rounded-xl border-2 bg-gray-50 transition ${selectedImage === index
-                        ? "border-gray-900"
-                        : "border-transparent hover:border-gray-300"
+                      ? "border-gray-900"
+                      : "border-transparent hover:border-gray-300"
                       }`}
                   >
                     <img
@@ -183,10 +186,10 @@ const ProductDetails = () => {
 
               <span
                 className={`rounded-full px-3 py-1 text-xs font-semibold ${isOutOfStock
-                    ? "bg-red-50 text-red-600"
-                    : stock <= 5
-                      ? "bg-amber-50 text-amber-700"
-                      : "bg-green-50 text-green-700"
+                  ? "bg-red-50 text-red-600"
+                  : stock <= 5
+                    ? "bg-amber-50 text-amber-700"
+                    : "bg-green-50 text-green-700"
                   }`}
               >
                 {isOutOfStock
