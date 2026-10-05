@@ -1,859 +1,501 @@
-# 🛒 ShopSphere
+# 🛍️ ShopSphere
 
-A full-stack e-commerce platform being built with **React, Node.js, Express, TypeScript, MongoDB, and Mongoose**.
+A full-stack e-commerce platform built with **React, TypeScript, Tailwind CSS, Node.js, Express, and MongoDB**.
 
-## 📌 Overview
-
-ShopSphere is a practical e-commerce application with two main areas:
-
-- 👤 Customer Store
-
-- 👨‍💼 Admin Dashboard
-
-The project is being developed incrementally using a **\*\*28-day development roadmap\*\***. The customer-facing frontend is currently being built with mock data before backend API integration.
-
----
-
-## ✨ Planned Features
-
-### 👤 Customer
-
-- Product browsing
-
-- Product search
-
-- Product filtering
-
-- Product sorting
-
-- Product details
-
-- User registration and login
-
-- Shopping cart
-
-- Wishlist
-
-- Checkout
-
-- Test payment
-
-- Order history
-
-- Order status tracking
-
-- Product reviews
-
-### 👨‍💼 Admin
-
-- Admin authentication
-
-- Admin dashboard
-
-- Product CRUD
-
-- Category management
-
-- Inventory management
-
-- Order management
-
-- Customer management
-
-- Analytics dashboard
-
-- Coupon management
-
-### 🔐 Planned Security
-
-- JWT authentication
-
-- bcrypt password hashing
-
-- Protected routes
-
-- Role-based authorization
-
-- Backend input validation
-
-- Environment variables for sensitive configuration
-
-> Most features above are planned for later roadmap days and are not implemented yet.
-
----
-
-## 🏗️ Architecture
-
-Planned application architecture:
-
-```text
-
-React Frontend
-
-      ↓
-
-REST API
-
-      ↓
-
-Express Server
-
-      ↓
-
-Mongoose
-
-      ↓
-
-MongoDB Atlas
-
-```
-
-### Request Flow
-
-```text
-
-Client
-
-  ↓
-
-Route
-
-  ↓
-
-Middleware
-
-  ↓
-
-Controller
-
-  ↓
-
-Mongoose
-
-  ↓
-
-MongoDB
-
-  ↓
-
-Response
-
-  ↓
-
-Client
-
-```
-
----
-
-## 🛠️ Tech Stack
-
-### Frontend
-
-- React
-
-- Vite
-
-- TypeScript
-
-- Tailwind CSS
-
-- React Router
-
-- TanStack Query
-
-### Backend
-
-- Node.js
-
-- Express
-
-- TypeScript
-
-- REST API
-
-### Database
-
-- MongoDB Atlas
-
-- Mongoose
-
-### Authentication
-
-- JWT
-
-- bcrypt
-
-- Role-based authorization
-
-### Other Tools
-
-- Git
-
-- GitHub
-
-- Cloudinary (planned)
-
-- Test payment integration (planned)
-
----
-
-## 📁 Project Structure
-
-```text
-
-shopsphere/
-
-├── client/
-
-│   └── React + Vite frontend
-
-├── server/
-
-│   └── Node.js + Express backend
-
-├── docs/
-
-│   └── UI-DESIGN.md
-
-├── README.md
-
-├── .gitignore
-
-└── package.json
-
-```
-
----
-
-## 🎯 Project Goals
-
-The goal of ShopSphere is to build a realistic full-stack e-commerce application while practicing:
-
-- React application architecture
-
-- Reusable component development
-
-- REST API development
-
-- Authentication and authorization
-
-- MongoDB data modeling
-
-- E-commerce business logic
-
-- Admin functionality
-
-- API integration
-
-- Responsive UI development
-
-- Production deployment
-
-- Full-stack project organization
-
----
-
-# 📋 Development Roadmap
-
-## Day 1 — Project Planning & Architecture ✅
-
-### Completed
-
-- [x] Define project requirements
-
-- [x] Define customer user flow
-
-- [x] Define admin user flow
-
-- [x] Plan application architecture
-
-- [x] Create GitHub repository
-
-- [x] Initialize React frontend
-
-- [x] Initialize Node.js backend
-
-- [x] Create README
-
-- [x] Initial Git commit
-
-**Status:** Completed
-
----
-
-## Day 2 — UI Design & UX Direction ✅
-
-### Customer UI Planning
-
-- [x] Homepage structure
-
-- [x] Product listing page
-
-- [x] Product details page
-
-- [x] Cart page
-
-- [x] Checkout flow
-
-- [x] Login/Register screens
-
-### Admin UI Planning
-
-- [x] Admin dashboard
-
-- [x] Product management
-
-- [x] Order management
-
-- [x] Inventory management
-
-- [x] Customer management
-
-- [x] Analytics structure
-
-### Design System & Documentation
-
-- [x] Typography, color, and spacing systems
-
-- [x] Button and input styles
-
-- [x] Product card structure and status badges
-
-- [x] Responsive design strategy
-
-- [x] Loading, empty, success, and error states
-
-- [x] Document UI/UX decisions in \`docs/UI-DESIGN.md\`
-
-- [x] Commit and push UI design documentation
-
-**Status:** Completed
-
----
-
-## Day 3 — React Setup & Shared Components ✅
-
-### Frontend Foundation
-
-- [x] React + Vite setup
-
-- [x] TypeScript configuration
-
-- [x] Tailwind CSS setup
-
-- [x] React Router setup
-
-- [x] TanStack Query setup
-
-### Reusable Components & Layout
-
-- [x] Shared UI components and reusable component foundation
-
-- [x] Navbar
-
-- [x] Footer
-
-- [x] \`CustomerLayout\`
-
-- [x] Navbar and Footer integration
-
-- [x] React Router \`Outlet\`
-
-### Customer Routes
-
-- [x] \`/\`
-
-- [x] \`/products\`
-
-- [x] \`/products/:id\`
-
-- [x] \`/cart\`
-
-- [x] \`/checkout\`
-
-- [x] \`/login\`
-
-- [x] \`/register\`
-
-- [x] \`/orders\`
-
-**Status:** Completed
-
----
-
-## Day 4 — Customer Homepage ✅
-
-### Homepage Sections
-
-- [x] Hero section
-
-- [x] Category section
-
-- [x] Featured products
-
-- [x] Promotional banner
-
-- [x] Responsive homepage layout
-
-### Reusable Components & Mock Data
-
-- [x] \`HeroSection\`
-
-- [x] \`CategorySection\`
-
-- [x] \`CategoryCard\`
-
-- [x] \`FeaturedProducts\`
-
-- [x] \`ProductCard\`
-
-- [x] \`PromoBanner\`
-
-- [x] Mock category data
-
-- [x] Mock product data
-
-### Responsive UI & Navigation
-
-- [x] Desktop, tablet, and mobile layouts
-
-- [x] Responsive product and category grids
-
-- [x] Responsive hero and promotional banner
-
-- [x] Homepage, product, cart, orders, login, and register navigation
-
-- [x] Homepage UI, responsive layout, navigation, and console/error checks
-
-**Status:** Completed
-
-### Homepage Flow
-
-```text
-
-Hero
-
-  ↓
-
-Categories
-
-  ↓
-
-Featured Products
-
-  ↓
-
-Promotional Banner
-
-```
-
----
-
-## Day 5 — Product Listing Page ✅
-
-### Product Listing
-
-- [x] Build \`/products\` page
-
-- [x] Product grid using reusable \`ProductCard\`
-
-- [x] Product search
-
-- [x] Category filtering
-
-- [x] Minimum and maximum price filtering
-
-- [x] Product sorting
-
-- [x] Product result count
-
-- [x] Empty state
-
-- [x] Responsive layout
-
-### Search, Filtering & Sorting
-
-- [x] Case-insensitive product-name search
-
-- [x] Display matching products and an empty state
-
-- [x] All products, Electronics, Fashion, Shoes, and Accessories filters
-
-- [x] Minimum and maximum price filters
-
-- [x] Prevent invalid minimum/maximum ranges
-
-- [x] Display selected price range
-
-- [x] Popular, price low-to-high, price high-to-low, and rating sorting
-
-### Responsive UX
-
-- [x] Desktop, tablet, and mobile product layouts
-
-- [x] Responsive filter controls and mobile filter panel
-
-- [x] Responsive category pills, search, and sorting controls
-
-- [x] Horizontal overflow prevention
-
-- [x] Filter sidebar and sticky desktop filter sidebar
-
-- [x] Reset filters and empty product state
-
-- [x] Product card hover effects
-
-
-
-**Data source:** The listing uses mock/static product data. Backend API integration is planned for a later roadmap stage.
-
-
-
-**Status:** Completed
-
-
-
-### Product Listing Flow
-
-
-
-```text
-
-Product Listing
-
-      ↓
-
-Search
-
-      ↓
-
-Category Filter
-
-      ↓
-
-Price Filter
-
-      ↓
-
-Sorting
-
-      ↓
-
-Product Grid / Empty State
-```
-
----
-
-## Day 6 — Product Details Page ✅
-
-### Product Details
-
-- [x] Build the product details page for \`/products/:id\`
-
-- [x] Read the product ID using React Router's \`useParams\`
-
-- [x] Find the matching product in mock data
-
-- [x] Handle invalid IDs and products that cannot be found
-
-- [x] Display product name, category, rating, and price
-
-- [x] Display stock status using the available mock data/default
-
-- [x] Add quantity increase/decrease controls with minimum and stock limits
-
-- [x] Calculate total price from unit price and quantity
-
-- [x] Add product image/gallery UI with a fallback when images are unavailable
-
-- [x] Add wishlist toggle UI
-
-- [x] Connect the product details Add to Cart action to the shared cart context (implemented during Day 7)
-
-- [x] Link product cards to the matching details route using React Router \`Link\`
-
-- [x] Add scroll-to-top behavior when the route changes
-
-- [x] Improve responsive spacing for mobile layouts
-
-- [x] Configure the customer layout as a flex column so the footer stays at the bottom on short pages and follows content on long pages
-
-### Testing & Build
-
-- [x] Test product details and navigation
-
-- [x] Check invalid product IDs
-
-- [x] Check quantity and total-price behavior
-
-- [x] Check stock-related button states
-
-- [x] Check wishlist and Add to Cart UI interactions
-
-- [x] Review responsive layout and footer behavior
-
-- [x] Frontend production build completed successfully with \`tsc -b && vite build\`
-
-Important implementation notes:
-
-- Product details still use mock/static data; no product API integration has been completed as part of this day.
-
-- The current mock products do not include image URLs or descriptions, so the page uses its fallback UI/text until those fields are supplied.
-
-- Add to Cart is connected to the shared React cart context. Cart persistence across page refreshes has not been implemented yet.
-
-- Wishlist state is local to the product details component and is not persistent.
-
-**Status:** Completed
-
----
-
-## Day 7 — Cart & Frontend Review ✅
-
-### Shared Cart State
-- [x] Create `CartContext` using React Context and `useState`
-- [x] Add `CartProvider` around the application
-- [x] Implement `addToCart` with duplicate-product quantity handling
-- [x] Implement increase/decrease quantity actions
-- [x] Implement remove-from-cart action
-- [x] Calculate subtotal from cart items
-- [x] Connect product listing and product details pages to shared cart state
-- [x] Show Add to Cart confirmation feedback
-
-### Cart Page
-- [x] Display cart products, unit prices, quantities, and line totals
-- [x] Add quantity controls and remove-item action
-- [x] Display order summary and subtotal
-- [x] Add empty-cart state and Continue Shopping link
-- [x] Add checkout navigation
-- [x] Test cart interactions and responsive layouts
-
-### Frontend Review & Build
-- [x] Production build passes with `npm run build`
-- [x] Review customer-facing routes and navigation
-- [x] Complete responsive layout and browser-console checks
-- [x] Update documentation and create the Day 7 Git checkpoint
-
-### Implementation Notes
-- Cart state currently lives in React Context and resets on a full page refresh.
-- Stock-limit enforcement in the cart still needs to be considered.
-- Checkout is a frontend flow; payment processing and order creation are not implemented yet.
-- Products still use mock/static data; backend API integration is planned for later roadmap days.
-
-**Status:** Completed
-
-## Day 8 — Express + TypeScript Setup 🚧
-
-### Backend Foundation
-- [x] Install Express and dotenv
-- [x] Install TypeScript, tsx, and Node.js/Express type definitions
-- [x] Configure `tsconfig.json`
-- [x] Configure npm scripts for development, build, start, and type checking
-- [x] Set up `app.ts` and `server.ts`
-- [x] Configure JSON request parsing
-- [x] Implement `GET /api/health`
-- [x] Add a 404 handler for unknown routes
-- [x] Add centralized error-handling middleware
-- [x] Configure `.env.example` and `.gitignore`
-
-### Testing & Validation
-- [x] TypeScript type checking passes
-- [x] Production build passes
-- [x] Health endpoint returns a successful response
-- [x] Unknown routes return the expected 404 JSON response
-- [x] Test centralized error handling using a temporary route
-- [x] Remove the temporary test route
-- [x] Verify the development server starts on port `5000`
-
-### Remaining Work
-- [ ] Write `server/notes.md`
-- [ ] Update the project README with backend setup instructions
-- [ ] Review Git changes and verify sensitive files are excluded
-- [ ] Create the Day 8 Git checkpoint
-
-### Implementation Notes
-- The Express application and server startup are separated into `src/app.ts` and `src/server.ts`.
-- The health endpoint is available at `/api/health`.
-- The server reads its port from the environment, defaulting to `5000`.
-- MongoDB connection and Product/Category schemas are planned for Day 9.
-
-**Status:** In Progress
-
----
-
-## 📚 Documentation
-
-### UI/UX Design
-
-The UI/UX direction, design system, responsive strategy, and interface states are documented in:
-
-```text
-
-docs/UI-DESIGN.md
-
-```
-
-### Current Data Strategy
-
-The homepage, product listing, and product details currently use mock/static product or category data. Backend API integration will be added in later roadmap days.
+ShopSphere is being developed as a structured 28-day full-stack project, covering both the customer-facing shopping experience and an admin management system.
 
 ---
 
 ## 📊 Project Status
 
 - **Project:** In Progress
-- **Overall progress:** 7/28 days — 25%
-- **Completed days:** 1–7
-- **Current milestone:** Day 8 — Express + TypeScript Setup
-- **Day 8 progress:** 5/6 steps complete
-- **Next milestone:** Finish Day 8 documentation, verify Git changes, and create the Git checkpoint
+- **Overall Progress:** **9/28 days — 32.14%**
+- **Completed Days:** 1–9
+- **Current Milestone:** Day 9 — MongoDB & Mongoose
+- **Next Milestone:** Day 10 — Product API
 
 ### Progress Tracker
 
 | Day | Milestone | Status |
 |---|---|---|
-| Day 1 | Project Planning & Architecture | Completed |
-| Day 2 | UI Design & UX Direction | Completed |
-| Day 3 | React Setup & Shared Components | Completed |
-| Day 4 | Customer Homepage | Completed |
-| Day 5 | Product Listing Page | Completed |
-| Day 6 | Product Details Page | Completed |
-| Day 7 | Cart & Frontend Review | Completed |
-| Day 8 | Express + TypeScript Setup | In Progress |
-| Day 9 | MongoDB Setup & Data Models | Upcoming |
+| Day 1 | Project Planning & Architecture | ✅ Completed |
+| Day 2 | UI Design & UX Direction | ✅ Completed |
+| Day 3 | React Setup & Shared Components | ✅ Completed |
+| Day 4 | Customer Homepage | ✅ Completed |
+| Day 5 | Product Listing Page | ✅ Completed |
+| Day 6 | Product Details Page | ✅ Completed |
+| Day 7 | Cart & Frontend Review | ✅ Completed |
+| Day 8 | Express + TypeScript Setup | ✅ Completed |
+| Day 9 | MongoDB & Mongoose | 🟡 In Progress |
+| Day 10 | Product API | ⏳ Upcoming |
 
-**Note:** Overall progress counts completed roadmap days only. Day 8 will count toward overall progress once all six steps are complete.
+> Overall progress counts completed roadmap days only. Day 9 will count toward the overall project progress after the final Git checkpoint is completed.
 
 ---
 
-## ⚙️ Backend Setup
+# 🎯 Project Goals
 
-### Prerequisites
-- Node.js and npm installed
-- Git installed
+ShopSphere aims to provide a complete e-commerce experience with:
 
-### Installation
+### Customer Side
 
-From the project root:
+- Browse products
+- Search and filter products
+- View product details
+- Manage shopping cart
+- User authentication
+- Checkout
+- Order management
+- Product reviews
+
+### Admin Side
+
+- Dashboard
+- Product management
+- Category management
+- Order management
+- User management
+- Inventory management
+
+---
+
+# 🛠️ Tech Stack
+
+## Frontend
+
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- React Router
+- TanStack Query
+
+## Backend
+
+- Node.js
+- Express
+- TypeScript
+- REST API
+- Mongoose
+
+## Database
+
+- MongoDB
+- MongoDB Atlas
+
+## Authentication
+
+Planned:
+
+- JWT
+- bcrypt
+- Role-based authorization
+
+## Other Technologies
+
+Planned:
+
+- Cloudinary
+- REST APIs
+- Vercel
+- Render / Railway
+
+---
+
+# 🏗️ Architecture
+
+```text
+React Frontend
+      ↓
+REST API
+      ↓
+Express Server
+      ↓
+Mongoose
+      ↓
+MongoDB Atlas
+```
+
+---
+
+# 🔄 Request Flow
+
+```text
+Client
+  ↓
+Express Server
+  ↓
+Middleware
+  ↓
+Route
+  ↓
+Controller
+  ↓
+Service
+  ↓
+Mongoose
+  ↓
+MongoDB Atlas
+  ↓
+Service
+  ↓
+Controller
+  ↓
+JSON Response
+  ↓
+Client
+```
+
+---
+
+# 📁 Project Structure
+
+```text
+shopsphere/
+│
+├── client/                         # React + TypeScript frontend
+│   │
+│   ├── src/
+│   │   ├── assets/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── context/
+│   │   ├── hooks/
+│   │   ├── services/
+│   │   ├── types/
+│   │   ├── utils/
+│   │   ├── routes/
+│   │   ├── App.tsx
+│   │   ├── main.tsx
+│   │   └── index.css
+│   │
+│   ├── package.json
+│   ├── tsconfig.json
+│   └── vite.config.ts
+│
+├── server/                         # Node.js + Express backend
+│   │
+│   ├── src/
+│   │   ├── config/
+│   │   │   └── db.ts
+│   │   │
+│   │   ├── models/
+│   │   │   ├── Product.ts
+│   │   │   └── Category.ts
+│   │   │
+│   │   ├── app.ts
+│   │   └── server.ts
+│   │
+│   ├── .env.example
+│   ├── package.json
+│   └── tsconfig.json
+│
+├── docs/
+│   └── UI-DESIGN.md
+│
+├── README.md
+├── .gitignore
+└── package.json
+```
+
+> The structure above will expand as new roadmap milestones are implemented.
+
+---
+
+# 🗄️ Database Design
+
+MongoDB Atlas currently contains the foundation for the ShopSphere database layer.
+
+```text
+MongoDB Atlas
+     ↓
+ShopSphere Database
+     │
+     ├── products
+     │
+     └── categories
+```
+
+### Product → Category Relationship
+
+```text
+Product
+   │
+   └── category: ObjectId
+                    ↓
+                 Category
+```
+
+Products reference categories using MongoDB `ObjectId`.
+
+Mongoose can later populate this relationship when required.
+
+---
+
+# 📦 Product Model
+
+The current Product model supports:
+
+- Name
+- Description
+- Price
+- Category
+- Stock
+- Images
+- Rating
+- Validation
+- Automatic timestamps
+
+Validation includes:
+
+```text
+Price  ≥ 0
+Stock  ≥ 0
+Rating  0–5
+```
+
+Mongoose automatically maintains:
+
+```text
+createdAt
+updatedAt
+```
+
+---
+
+# 🏷️ Category Model
+
+The Category model currently supports:
+
+- Name
+- Description
+- Required name validation
+- Unique category names
+- String trimming
+- Automatic timestamps
+
+---
+
+# 🔌 MongoDB Connection
+
+MongoDB is connected through Mongoose.
+
+```text
+server.ts
+    ↓
+connectDB()
+    ↓
+Mongoose
+    ↓
+MongoDB Atlas
+```
+
+The MongoDB connection string is stored in an environment variable:
+
+```env
+MONGODB_URI=your_mongodb_connection_string
+```
+
+Sensitive environment variables are not committed to Git.
+
+---
+
+# 🧪 Database Testing
+
+The Day 9 database layer has been tested for:
+
+- MongoDB connection
+- Category creation
+- Product creation
+- Product retrieval
+- Product update
+- Product deletion
+- Validation errors
+- ObjectId relationship
+- Automatic timestamps
+- Test data cleanup
+
+Example validation tests successfully reject:
+
+```text
+Negative price
+Negative stock
+Rating greater than 5
+```
+
+---
+
+# 🚀 Local Development
+
+## Clone the repository
+
+```bash
+git clone <repository-url>
+cd shopsphere
+```
+
+## Install dependencies
+
+### Frontend
+
+```bash
+cd client
+npm install
+```
+
+### Backend
 
 ```bash
 cd server
 npm install
 ```
 
-### Environment Variables
+---
 
-Create a `.env` file inside `server/` with:
+# 🔐 Environment Variables
+
+Create a `.env` file inside the `server` directory.
 
 ```env
 PORT=5000
+MONGODB_URI=your_mongodb_connection_string
 ```
 
-The repository also contains `.env.example` as a template. Keep actual environment secrets in `.env`; do not commit that file.
+Never commit the real `.env` file.
 
-### Development
+Use `.env.example` to document required variables.
 
-Start the development server:
+---
+
+# ▶️ Run the Backend
 
 ```bash
+cd server
 npm run dev
 ```
 
-The API runs on `http://localhost:5000` by default.
-
-### Available Scripts
-
-| Command | Purpose |
-|---|---|
-| `npm run dev` | Start the development server with automatic restarts |
-| `npm run typecheck` | Check TypeScript types |
-| `npm run build` | Compile TypeScript into `dist/` |
-| `npm start` | Run the compiled production server |
-
-### Health Check
-
-Send a GET request to:
+Expected output:
 
 ```text
-http://localhost:5000/api/health
+MongoDB connected successfully
+ShopSphere API running on port 5000
 ```
-
-Expected response:
-
-```json
-{
-  "success": true,
-  "message": "ShopSphere API is running"
-}
-```
-
-Unknown routes return a JSON 404 response. Centralized error-handling middleware provides a consistent JSON response for server errors.
-
-**Current scope:** The backend foundation is set up. Database integration and product APIs are planned for subsequent roadmap days.
 
 ---
 
-## 🚀 Development Approach
+# 🏗️ Build the Backend
 
-ShopSphere is being developed incrementally, completing and reviewing the frontend foundation before integrating real backend data and e-commerce workflows.
-
-```text
-
-Frontend Foundation
-
-       ↓
-
-Homepage UI
-
-       ↓
-
-Product Listing UI
-
-       ↓
-
-Product Details
-
-       ↓
-
-Cart & Frontend Review
-
-       ↓
-
-Backend API
-
-       ↓
-
-Database Integration
-
-       ↓
-
-Authentication
-
-       ↓
-
-E-commerce Logic
-
-       ↓
-
-Admin Dashboard
-
-       ↓
-
-Testing
-
-       ↓
-
-Deployment
-
+```bash
+cd server
+npm run build
 ```
 
-The exact implementation sequence will follow the 28-day roadmap. Planned features should not be considered implemented until their roadmap tasks are completed.
+The TypeScript build should complete without errors.
 
 ---
 
-## 👨‍💻 Developer
+# 📚 Development Roadmap
+
+## Phase 1 — Planning & Frontend
+
+- [x] Day 1 — Project Planning & Architecture
+- [x] Day 2 — UI Design & UX Direction
+- [x] Day 3 — React Setup & Shared Components
+- [x] Day 4 — Customer Homepage
+- [x] Day 5 — Product Listing Page
+- [x] Day 6 — Product Details Page
+- [x] Day 7 — Cart & Frontend Review
+
+## Phase 2 — Backend Foundation
+
+- [x] Day 8 — Express + TypeScript Setup
+- [ ] Day 9 — MongoDB & Mongoose
+- [ ] Day 10 — Product API
+- [ ] Day 11 — Category API
+- [ ] Day 12 — Authentication
+- [ ] Day 13 — Authorization
+- [ ] Day 14 — Backend Review
+
+## Phase 3 — Full-Stack Integration
+
+- [ ] API integration
+- [ ] Authentication integration
+- [ ] Product management
+- [ ] Cart synchronization
+- [ ] Checkout
+- [ ] Orders
+
+## Phase 4 — Admin & Production
+
+- [ ] Admin dashboard
+- [ ] Inventory management
+- [ ] Reviews
+- [ ] Image uploads
+- [ ] Error handling
+- [ ] Testing
+- [ ] Deployment
+- [ ] Final optimization
+
+---
+
+# 🧠 Key Concepts Practiced
+
+During the first nine days, the project has covered:
+
+- React component architecture
+- React Router
+- Tailwind CSS
+- State management
+- Cart management
+- Express
+- TypeScript
+- REST API foundations
+- Environment variables
+- MongoDB
+- MongoDB Atlas
+- Mongoose
+- Schemas
+- Models
+- ObjectId
+- Validation
+- Timestamps
+- CRUD operations
+- Git workflow
+
+---
+
+# 📌 Current Focus
+
+### Day 9 — MongoDB & Mongoose
+
+Current backend flow:
+
+```text
+Express
+   ↓
+Mongoose
+   ↓
+MongoDB Atlas
+```
+
+The next milestone is:
+
+### Day 10 — Product API
+
+The Product API will build on the database models created during Day 9.
+
+---
+
+# 👨‍💻 Developer
 
 **Prabhat Jaidiya**
 
-Building ShopSphere as a practical full-stack e-commerce project while developing skills in React, TypeScript, Node.js, Express, MongoDB, and modern full-stack development.
+B.Sc. Mathematical Science — University of Delhi
+
+Aspiring Full-Stack Developer
+
+---
+
+# 📄 License
+
+This project is being developed as a personal learning and portfolio project.
