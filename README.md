@@ -11,8 +11,8 @@ ShopSphere is being developed as a structured 28-day full-stack project, coverin
 - **Project:** In Progress
 - **Overall Progress:** **9/28 days — 32.14%**
 - **Completed Days:** 1–9
-- **Current Milestone:** Day 9 — MongoDB & Mongoose
-- **Next Milestone:** Day 10 — Product API
+- **Current Milestone:** **Day 10 — Product API**
+- **Next Milestone:** Day 11 — Product Creation & Management
 
 ### Progress Tracker
 
@@ -26,10 +26,11 @@ ShopSphere is being developed as a structured 28-day full-stack project, coverin
 | Day 6 | Product Details Page | ✅ Completed |
 | Day 7 | Cart & Frontend Review | ✅ Completed |
 | Day 8 | Express + TypeScript Setup | ✅ Completed |
-| Day 9 | MongoDB & Mongoose | 🟡 In Progress |
-| Day 10 | Product API | ⏳ Upcoming |
+| Day 9 | MongoDB & Mongoose | ✅ Completed |
+| Day 10 | Product API | 🟡 In Progress |
+| Day 11 | Product Creation & Management | ⏳ Upcoming |
 
-> Overall progress counts completed roadmap days only. Day 9 will count toward the overall project progress after the final Git checkpoint is completed.
+> Overall progress counts completed roadmap days only. Day 10 will count toward the overall project progress after the final Git checkpoint is completed.
 
 ---
 
@@ -107,13 +108,21 @@ Planned:
 ```text
 React Frontend
       ↓
-REST API
+HTTP Request
       ↓
-Express Server
+Express REST API
       ↓
-Mongoose
+Routes
+      ↓
+Controllers
+      ↓
+Mongoose Models
       ↓
 MongoDB Atlas
+      ↓
+JSON Response
+      ↓
+React Frontend
 ```
 
 ---
@@ -131,13 +140,9 @@ Route
   ↓
 Controller
   ↓
-Service
-  ↓
 Mongoose
   ↓
 MongoDB Atlas
-  ↓
-Service
   ↓
 Controller
   ↓
@@ -182,6 +187,12 @@ shopsphere/
 │   │   ├── models/
 │   │   │   ├── Product.ts
 │   │   │   └── Category.ts
+│   │   │
+│   │   ├── controllers/
+│   │   │   └── product.controller.ts
+│   │   │
+│   │   ├── routes/
+│   │   │   └── product.routes.ts
 │   │   │
 │   │   ├── app.ts
 │   │   └── server.ts
@@ -409,8 +420,8 @@ The TypeScript build should complete without errors.
 ## Phase 2 — Backend Foundation
 
 - [x] Day 8 — Express + TypeScript Setup
-- [ ] Day 9 — MongoDB & Mongoose
-- [ ] Day 10 — Product API
+- [x] Day 9 — MongoDB & Mongoose
+- [x] Day 10 — Product API
 - [ ] Day 11 — Category API
 - [ ] Day 12 — Authentication
 - [ ] Day 13 — Authorization
@@ -466,23 +477,66 @@ During the first nine days, the project has covered:
 
 # 📌 Current Focus
 
-### Day 9 — MongoDB & Mongoose
+### Day 10 — Product API
+
+The Product API builds on the MongoDB and Mongoose foundation created during Day 9.
 
 Current backend flow:
 
 ```text
-Express
-   ↓
+Client
+  ↓
+Express Server
+  ↓
+Product Routes
+  ↓
+Product Controller
+  ↓
 Mongoose
-   ↓
+  ↓
 MongoDB Atlas
+  ↓
+JSON Response
+  ↓
+Client
 ```
 
-The next milestone is:
+### Day 10 Features
 
-### Day 10 — Product API
+- Product listing
+- Product details
+- Pagination
+- Search by product name
+- Category filtering
+- Category population using `populate()`
+- ObjectId validation
+- 400 / 404 / 500 error handling
+- Combined search and category filtering
+- Postman API testing
 
-The Product API will build on the database models created during Day 9.
+### API Endpoints
+
+```text
+GET /api/products
+GET /api/products/:id
+```
+
+Query parameters supported:
+
+```text
+?page=1
+&limit=10
+&search=phone
+&category=CATEGORY_ID
+```
+
+### Next Milestone
+
+**Day 11 — Product Creation & Management**
+```
+
+**One important point:** don't change the overall progress to `10/28` yet. We should do that only after your final `tsc`, build, cleanup, notes, and Git checkpoint are complete.
+```
 
 ---
 
