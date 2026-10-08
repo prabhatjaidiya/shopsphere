@@ -9,10 +9,10 @@ ShopSphere is being developed as a structured 28-day full-stack project, coverin
 ## 📊 Project Status
 
 - **Project:** In Progress
-- **Overall Progress:** **9/28 days — 32.14%**
-- **Completed Days:** 1–9
-- **Current Milestone:** **Day 10 — Product API**
-- **Next Milestone:** Day 11 — Product Creation & Management
+- **Overall Progress:** **10/28 days — 35.71%**
+- **Completed Days:** 1–10
+- **Current Milestone:** **Day 11 — Authentication & Users**
+- **Next Milestone:** **Day 12 — Roles & Protected Routes**
 
 ### Progress Tracker
 
@@ -27,10 +27,56 @@ ShopSphere is being developed as a structured 28-day full-stack project, coverin
 | Day 7 | Cart & Frontend Review | ✅ Completed |
 | Day 8 | Express + TypeScript Setup | ✅ Completed |
 | Day 9 | MongoDB & Mongoose | ✅ Completed |
-| Day 10 | Product API | 🟡 In Progress |
-| Day 11 | Product Creation & Management | ⏳ Upcoming |
+| Day 10 | Product API | ✅ Completed |
+| Day 11 | Authentication & Users | 🟡 In Progress |
+| Day 12 | Roles & Protected Routes | ⏳ Upcoming |
 
-> Overall progress counts completed roadmap days only. Day 10 will count toward the overall project progress after the final Git checkpoint is completed.
+
+### Current tracking
+
+**ShopSphere: 10/28 → 35.71%**
+
+**Day 11: 5/6 steps complete → 83.33%**
+
+Only **Step 6 — Notes + Git** remains. After that, we'll officially mark **Day 11 complete** and move to **Day 12 — Roles & Protected Routes**.
+
+> Overall progress counts completed roadmap days only. Day 11 will count toward the overall project progress after the final Notes + Git checkpoint is completed.
+
+---
+
+## 🔐 Day 11 — Authentication & Users
+
+### Completed
+
+- User Mongoose model
+- User validation
+- Email uniqueness
+- Secure password handling
+- bcrypt password hashing
+- Registration API
+- Login API
+- Password verification
+- JWT generation
+- JWT verification
+- Authentication middleware
+- Bearer token handling
+- Protected route testing
+- Authentication error handling
+
+### Authentication Flow
+
+```text
+Registration
+    ↓
+Validate Input
+    ↓
+Check Existing User
+    ↓
+bcrypt.hash()
+    ↓
+Create User
+    ↓
+MongoDB
 
 ---
 
@@ -178,7 +224,7 @@ shopsphere/
 │   ├── tsconfig.json
 │   └── vite.config.ts
 │
-├── server/                         # Node.js + Express backend
+├── server/                         # Node.js + Express + TypeScript backend
 │   │
 │   ├── src/
 │   │   ├── config/
@@ -186,17 +232,29 @@ shopsphere/
 │   │   │
 │   │   ├── models/
 │   │   │   ├── Product.ts
-│   │   │   └── Category.ts
+│   │   │   ├── Category.ts
+│   │   │   └── User.ts
 │   │   │
 │   │   ├── controllers/
-│   │   │   └── product.controller.ts
+│   │   │   ├── product.controller.ts
+│   │   │   └── auth.controller.ts
 │   │   │
 │   │   ├── routes/
-│   │   │   └── product.routes.ts
+│   │   │   ├── product.routes.ts
+│   │   │   └── auth.routes.ts
+│   │   │
+│   │   ├── middleware/
+│   │   │   └── auth.middleware.ts
+│   │   │
+│   │   ├── types/
+│   │   │   └── express.d.ts
 │   │   │
 │   │   ├── app.ts
-│   │   └── server.ts
+│   │   ├── server.ts
+│   │   ├── test-bcrypt.ts
+│   │   └── test-jwt.ts
 │   │
+│   ├── .env
 │   ├── .env.example
 │   ├── package.json
 │   └── tsconfig.json
@@ -205,6 +263,7 @@ shopsphere/
 │   └── UI-DESIGN.md
 │
 ├── README.md
+├── notes.md
 ├── .gitignore
 └── package.json
 ```
@@ -422,7 +481,7 @@ The TypeScript build should complete without errors.
 - [x] Day 8 — Express + TypeScript Setup
 - [x] Day 9 — MongoDB & Mongoose
 - [x] Day 10 — Product API
-- [ ] Day 11 — Category API
+- [x] Day 11 — Category API
 - [ ] Day 12 — Authentication
 - [ ] Day 13 — Authorization
 - [ ] Day 14 — Backend Review
@@ -477,65 +536,34 @@ During the first nine days, the project has covered:
 
 # 📌 Current Focus
 
-### Day 10 — Product API
+## Day 11 — Authentication & Users
 
-The Product API builds on the MongoDB and Mongoose foundation created during Day 9.
+Day 11 builds the authentication foundation on top of the Express, MongoDB, and Mongoose backend created during the previous days.
 
-Current backend flow:
+Current authentication flow:
 
 ```text
+Registration
+
 Client
   ↓
-Express Server
+POST /api/auth/register
   ↓
-Product Routes
+Auth Route
   ↓
-Product Controller
+Auth Controller
   ↓
-Mongoose
+Validate Input
+  ↓
+Check Existing User
+  ↓
+bcrypt Hash
+  ↓
+User Model
   ↓
 MongoDB Atlas
   ↓
-JSON Response
-  ↓
-Client
-```
-
-### Day 10 Features
-
-- Product listing
-- Product details
-- Pagination
-- Search by product name
-- Category filtering
-- Category population using `populate()`
-- ObjectId validation
-- 400 / 404 / 500 error handling
-- Combined search and category filtering
-- Postman API testing
-
-### API Endpoints
-
-```text
-GET /api/products
-GET /api/products/:id
-```
-
-Query parameters supported:
-
-```text
-?page=1
-&limit=10
-&search=phone
-&category=CATEGORY_ID
-```
-
-### Next Milestone
-
-**Day 11 — Product Creation & Management**
-```
-
-**One important point:** don't change the overall progress to `10/28` yet. We should do that only after your final `tsc`, build, cleanup, notes, and Git checkpoint are complete.
+Safe JSON Response
 ```
 
 ---
