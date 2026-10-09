@@ -9,10 +9,10 @@ ShopSphere is being developed as a structured 28-day full-stack project, coverin
 ## 📊 Project Status
 
 - **Project:** In Progress
-- **Overall Progress:** **10/28 days — 35.71%**
-- **Completed Days:** 1–10
-- **Current Milestone:** **Day 11 — Authentication & Users**
-- **Next Milestone:** **Day 12 — Roles & Protected Routes**
+- **Overall Progress:** **11/28 days — 39.29%**
+- **Completed Days:** 1–11
+- **Current Milestone:** **Day 12 — Roles & Protected Routes**
+- **Next Milestone:** Day 13
 
 ### Progress Tracker
 
@@ -28,19 +28,21 @@ ShopSphere is being developed as a structured 28-day full-stack project, coverin
 | Day 8 | Express + TypeScript Setup | ✅ Completed |
 | Day 9 | MongoDB & Mongoose | ✅ Completed |
 | Day 10 | Product API | ✅ Completed |
-| Day 11 | Authentication & Users | 🟡 In Progress |
-| Day 12 | Roles & Protected Routes | ⏳ Upcoming |
+| Day 11 | Authentication & Users | ✅ Completed |
+| Day 12 | Roles & Protected Routes | 🟡 In Progress |
 
 
 ### Current tracking
 
-**ShopSphere: 10/28 → 35.71%**
+**ShopSphere: 11/28 — 39.29%**
 
-**Day 11: 5/6 steps complete → 83.33%**
+**Day 11: 6/6 steps complete — 100%**
 
-Only **Step 6 — Notes + Git** remains. After that, we'll officially mark **Day 11 complete** and move to **Day 12 — Roles & Protected Routes**.
+**Day 12: Implementation and authorization testing complete.**
 
-> Overall progress counts completed roadmap days only. Day 11 will count toward the overall project progress after the final Notes + Git checkpoint is completed.
+Remaining: Day 12 learning notes, documentation update, and final verification.
+
+> Overall progress counts only fully completed roadmap days. Day 12 will count toward overall progress after all required steps are completed.
 
 ---
 
@@ -536,35 +538,65 @@ During the first nine days, the project has covered:
 
 # 📌 Current Focus
 
-## Day 11 — Authentication & Users
+## Day 12 — Roles & Protected Routes
 
-Day 11 builds the authentication foundation on top of the Express, MongoDB, and Mongoose backend created during the previous days.
+Day 12 builds role-based authorization on top of the authentication foundation completed on Day 11.
 
-Current authentication flow:
+### Authorization Features
+
+- Defined two supported roles: `customer` and `admin`.
+- Added reusable `authorizeRoles` middleware.
+- Validated JWT payloads, including non-empty user IDs and supported role values.
+- Restricted the `GET /api/admin/check` test endpoint to authenticated admins.
+- Preserved public access to product listing and existing product details endpoints.
+- Kept public registration from accepting client-supplied roles.
+
+### Authorization Flow
 
 ```text
-Registration
-
-Client
-  ↓
-POST /api/auth/register
-  ↓
-Auth Route
-  ↓
-Auth Controller
-  ↓
-Validate Input
-  ↓
-Check Existing User
-  ↓
-bcrypt Hash
-  ↓
-User Model
-  ↓
-MongoDB Atlas
-  ↓
-Safe JSON Response
+Incoming Request
+      ↓
+Authentication Middleware
+      ↓
+Verify JWT and Validate Claims
+      ↓
+Attach Authenticated User
+      ↓
+Role Authorization Middleware
+      ↓
+Check Allowed Roles
+      ↓
+401 — Missing or Invalid Authentication
+403 — Insufficient Permissions
+200 — Authorized Request
 ```
+
+### Verification Results
+
+| Test | Expected Result | Result |
+|---|---|---|
+| Missing token on admin endpoint | 401 Unauthorized | Passed |
+| Customer token on admin endpoint | 403 Forbidden | Passed |
+| Admin-role test token on admin endpoint | 200 OK | Passed |
+| Unsupported JWT role | 401 Unauthorized | Passed |
+| Existing protected route with customer token | 200 OK | Passed |
+| Public product listing without a token | Successful response | Passed |
+| TypeScript type checking | No errors | Passed |
+| Production build | Successful | Passed |
+
+### Git Checkpoint
+
+- **Commit:** `2b7a1f4`
+- **Message:** `feat: add role-based authorization middleware`
+- **Repository:** Implementation committed as `2b7a1f4`; README documentation changes are pending commit.
+
+### Remaining Work
+
+- Finalize Day 12 learning notes and documentation.
+- Verify the final README and Git status.
+- Mark Day 12 complete only after all required steps are confirmed.
+
+> Security note: The admin test used a temporary, locally signed JWT to validate role-checking behavior. A real database-backed admin login has not yet been tested, and authorization based on JWT role claims does not automatically reflect later role changes in MongoDB.
 
 ---
 
