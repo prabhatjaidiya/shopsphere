@@ -41,21 +41,23 @@ export const authenticate = (
         // Verify JWT
         const decoded = jwt.verify(token, JWT_SECRET);
 
+        // Validate token payload and role
         if (
             typeof decoded !== "object" ||
-            !decoded ||
-            !("userId" in decoded) ||
-            !("role" in decoded)
+            decoded === null ||
+            typeof decoded.userId !== "string" ||
+            decoded.userId.trim().length === 0 ||
+            (decoded.role !== "customer" && decoded.role !== "admin")
         ) {
             return res.status(401).json({
                 message: "Invalid token payload",
             });
         }
 
-        // Attach authenticated user
+        // Attach validated authenticated user
         req.user = {
-            userId: String(decoded.userId),
-            role: String(decoded.role),
+            userId: decoded.userId,
+            role: decoded.role,
         };
 
         next();

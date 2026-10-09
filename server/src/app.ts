@@ -1,6 +1,8 @@
 import express from "express";
 import productRoutes from "./routes/product.routes.js";
 import authRoutes from "./routes/auth.routes.js";
+import { authenticate } from "./middleware/auth.middleware.js";
+import { authorizeRoles } from "./middleware/authorize.middleware.js";
 
 const app = express();
 
@@ -16,6 +18,19 @@ app.get("/api/health", (req, res) => {
         message: "ShopSphere API is running",
     });
 });
+
+app.get(
+    "/api/admin/check",
+    authenticate,
+    authorizeRoles("admin"),
+    (req, res) => {
+        res.status(200).json({
+            success: true,
+            message: "Admin access granted",
+            user: req.user,
+        });
+    }
+);
 
 // Handle routes that do not exist
 app.use((req, res) => {
