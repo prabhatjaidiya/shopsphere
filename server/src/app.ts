@@ -3,6 +3,8 @@ import productRoutes from "./routes/product.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import { authenticate } from "./middleware/auth.middleware.js";
 import { authorizeRoles } from "./middleware/authorize.middleware.js";
+import cartRoutes from "./routes/cart.routes.js";
+import wishlistRoutes from "./routes/wishlist.routes.js";
 
 const app = express();
 
@@ -11,6 +13,10 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 
 app.use("/api/products", productRoutes);
+
+app.use("/api/cart", cartRoutes);
+
+app.use("/api/wishlist", wishlistRoutes);
 
 app.get("/api/health", (req, res) => {
     res.status(200).json({
