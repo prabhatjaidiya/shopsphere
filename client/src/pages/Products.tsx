@@ -1,5 +1,10 @@
-import { useState } from "react";
-import { products } from "../data/products";
+import { useEffect, useState } from "react";
+import {
+  mapApiProduct,
+  type Product,
+  type ProductsApiResponse,
+} from "../data/products";
+import { apiRequest } from "../lib/api";
 import ProductCard from "../components/home/ProductCard";
 
 const categories = [
@@ -11,12 +16,43 @@ const categories = [
 ];
 
 const Products = () => {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(50000);
   const [sort, setSort] = useState("popular");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        const response =
+          await apiRequest<ProductsApiResponse>("/api/products");
+
+        if (!response.success) {
+          throw new Error("Failed to fetch products");
+        }
+
+        setProducts(response.data.map(mapApiProduct));
+      } catch (err) {
+        setError(
+          err instanceof Error
+            ? err.message
+            : "Something went wrong while fetching products"
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    void fetchProducts();
+  }, []);
 
   // -----------------------------
   // Filter products
@@ -386,6 +422,27 @@ const Products = () => {
                 </div>
               </div>
 
+
+              {isLoading && (
+                <p className="py-10 text-center text-slate-600">
+                  Loading products...
+                </p>
+              )}
+
+              {!isLoading && error && (
+                <div className="my-6 rounded-xl border border-red-200 bg-red-50 p-4 text-center text-red-700">
+                  <p>{error}</p>
+                  <button
+                    type="button"
+                    onClick={() => window.location.reload()}
+                    className="mt-3 rounded-lg bg-red-600 px-4 py-2 text-white"
+                  >
+                    Retry
+                  </button>
+                </div>
+              )}
+
+
               {/* Result */}
               <div className="mb-5 flex items-center justify-between gap-3">
                 <p className="text-sm text-slate-500">
@@ -404,16 +461,11 @@ const Products = () => {
               </div>
 
               {/* Product Grid */}
-              {sortedProducts.length > 0 ? (
+              {!isLoading && !error && sortedProducts.length > 0 ? (
                 <div className="grid w-full min-w-0 max-w-full grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                   {sortedProducts.map((product) => (
                     <div key={product.id} className="min-w-0 max-w-full">
-                      <ProductCard
-                        id={product.id}
-                        name={product.name}
-                        price={product.price}
-                        rating={product.rating}
-                      />
+                      <ProductCard product={product} />
                     </div>
                   ))}
                 </div>

@@ -1,91 +1,207 @@
 import {
   createContext,
   useContext,
+  useEffect,
   useState,
   type ReactNode,
 } from "react";
-import { products } from "../data/products";
+import { apiRequest } from "../lib/api";
+import { useAuth } from "./AuthContext";
+import type { Product, ProductId } from "../data/products";
 
-type Product = (typeof products)[number];
+type CartProduct = Product & {
+  stock?: number;
+  images?: string[];
+};
 
 export type CartItem = {
-  product: Product;
+  product: CartProduct;
   quantity: number;
+};
+
+type CartApiProduct = {
+  _id: string;
+  name: string;
+  price: number;
+  stock: number;
+  images: string[];
+};
+
+type CartApiItem = {
+  product: CartApiProduct | string;
+  quantity: number;
+};
+
+type CartApiResponse = {
+  success: boolean;
+  message?: string;
+  data: {
+    items: CartApiItem[];
+  };
 };
 
 type CartContextType = {
   cart: CartItem[];
-  addToCart: (product: Product, quantity: number) => void;
-  increaseQuantity: (productId: number) => void;
-  decreaseQuantity: (productId: number) => void;
-  removeFromCart: (productId: number) => void;
+  isLoading: boolean;
+  error: string | null;
+  addToCart: (product: Product, quantity: number) => Promise<void>;
+  increaseQuantity: (productId: ProductId) => Promise<void>;
+  decreaseQuantity: (productId: ProductId) => Promise<void>;
+  removeFromCart: (productId: ProductId) => Promise<void>;
   subtotal: number;
+  refreshCart: () => Promise<void>;
 };
 
-const CartContext = createContext<CartContextType | undefined>(
-  undefined
-);
+const CartContext = createContext<CartContextType | undefined>(undefined);
+
+function mapCartResponse(response: CartApiResponse): CartItem[] {
+  return response.data.items.flatMap((item) => {
+    if (typeof item.product === "string") {
+      return [];
+    }
+
+    const product = item.product;
+
+    return [{
+      product: {
+        id: product._id,
+        name: product.name,
+        price: product.price,
+        stock: product.stock,
+        images: product.images,
+        image: product.images[0],
+        category: "",
+        rating: 0,
+      },
+      quantity: item.quantity,
+    }];
+  });
+}
 
 export function CartProvider({ children }: { children: ReactNode }) {
+  const { token, user } = useAuth();
+
   const [cart, setCart] = useState<CartItem[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const addToCart = (product: Product, quantity: number) => {
-    if (!Number.isInteger(quantity) || quantity < 1) return;
+  const refreshCart = async () => {
+    if (!token || user?.role !== "customer") {
+      setCart([]);
+      setError(null);
+      setIsLoading(false);
+      return;
+    }
 
-    setCart((currentCart) => {
-      const existingItem = currentCart.find(
-        (item) => item.product.id === product.id
-      );
+    setIsLoading(true);
+    setError(null);
 
-      if (existingItem) {
-        return currentCart.map((item) =>
-          item.product.id === product.id
-            ? {
-                ...item,
-                quantity: item.quantity + quantity,
-              }
-            : item
-        );
+    try {
+      const response = await apiRequest<CartApiResponse>("/api/cart", {
+        token,
+      });
+
+      if (!response.success) {
+        throw new Error(response.message || "Failed to load cart");
       }
 
-      return [...currentCart, { product, quantity }];
+      setCart(mapCartResponse(response));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load cart");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    void refreshCart();
+  }, [token, user?.role]);
+
+  const addToCart = async (product: Product, quantity: number) => {
+    if (!token || user?.role !== "customer") {
+      throw new Error("Please log in with a customer account to use your cart");
+    }
+
+    if (!Number.isInteger(quantity) || quantity < 1) {
+      throw new Error("Quantity must be a positive integer");
+    }
+
+    const response = await apiRequest<CartApiResponse>("/api/cart", {
+      method: "POST",
+      token,
+      body: JSON.stringify({
+        productId: String(product.id),
+        quantity,
+      }),
     });
+
+    if (!response.success) {
+      throw new Error(response.message || "Failed to add product");
+    }
+
+    setCart(mapCartResponse(response));
+    setError(null);
   };
 
-  const increaseQuantity = (productId: number) => {
-    setCart((currentCart) =>
-      currentCart.map((item) =>
-        item.product.id === productId
-          ? { ...item, quantity: item.quantity + 1 }
-          : item
-      )
+  const updateQuantity = async (productId: ProductId, quantity: number) => {
+    if (!token) {
+      throw new Error("Please log in to update your cart");
+    }
+
+    const response = await apiRequest<CartApiResponse>(
+      `/api/cart/${encodeURIComponent(String(productId))}`,
+      {
+        method: "PATCH",
+        token,
+        body: JSON.stringify({ quantity }),
+      }
     );
+
+    if (!response.success) {
+      throw new Error(response.message || "Failed to update quantity");
+    }
+
+    setCart(mapCartResponse(response));
+    setError(null);
   };
 
-  const decreaseQuantity = (productId: number) => {
-    setCart((currentCart) =>
-      currentCart.map((item) =>
-        item.product.id === productId
-          ? {
-              ...item,
-              quantity: Math.max(1, item.quantity - 1),
-            }
-          : item
-      )
-    );
+  const increaseQuantity = async (productId: ProductId) => {
+    const item = cart.find((entry) => entry.product.id === productId);
+    if (item) {
+      await updateQuantity(productId, item.quantity + 1);
+    }
   };
 
-  const removeFromCart = (productId: number) => {
-    setCart((currentCart) =>
-      currentCart.filter(
-        (item) => item.product.id !== productId
-      )
+  const decreaseQuantity = async (productId: ProductId) => {
+    const item = cart.find((entry) => entry.product.id === productId);
+    if (item && item.quantity > 1) {
+      await updateQuantity(productId, item.quantity - 1);
+    }
+  };
+
+  const removeFromCart = async (productId: ProductId) => {
+    if (!token) {
+      throw new Error("Please log in to update your cart");
+    }
+
+    const response = await apiRequest<CartApiResponse>(
+      `/api/cart/${encodeURIComponent(String(productId))}`,
+      {
+        method: "DELETE",
+        token,
+      }
     );
+
+    if (!response.success) {
+      throw new Error(response.message || "Failed to remove product");
+    }
+
+    setCart(mapCartResponse(response));
+    setError(null);
   };
 
   const subtotal = cart.reduce(
-    (total, item) =>
-      total + item.product.price * item.quantity,
+    (total, item) => total + item.product.price * item.quantity,
     0
   );
 
@@ -93,11 +209,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
     <CartContext.Provider
       value={{
         cart,
+        isLoading,
+        error,
         addToCart,
         increaseQuantity,
         decreaseQuantity,
         removeFromCart,
         subtotal,
+        refreshCart,
       }}
     >
       {children}

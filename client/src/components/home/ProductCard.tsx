@@ -1,29 +1,19 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { products } from "../../data/products";
 import { useCart } from "../../context/CartContext";
+import type { Product } from "../../data/products";
 
 interface ProductCardProps {
-    id: number;
-    name: string;
-    price: number;
-    rating: number;
+    product: Product;
 }
 
-const ProductCard = ({
-    id,
-    name,
-    price,
-    rating,
-}: ProductCardProps) => {
+const ProductCard = ({ product }: ProductCardProps) => {
     const { addToCart } = useCart();
     const [cartMessage, setCartMessage] = useState("");
 
-    const product = products.find((item) => item.id === id);
+    const { id, name, price, rating } = product;
 
     const handleAddToCart = () => {
-        if (!product) return;
-
         addToCart(product, 1);
         setCartMessage(`${product.name} added to your cart!`);
     };
@@ -67,8 +57,7 @@ const ProductCard = ({
                     <button
                         type="button"
                         onClick={handleAddToCart}
-                        disabled={!product}
-                        className="block w-full rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+                        className="block w-full rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-gray-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
                     >
                         Add to Cart
                     </button>

@@ -1,15 +1,56 @@
+export type ProductId = string | number;
+
 export interface Product {
-  id: number;
+  id: ProductId;
   name: string;
   category: string;
   price: number;
   rating: number;
-
-  // Product Details fields
   description?: string;
   stock?: number;
   image?: string;
   images?: string[];
+}
+
+export interface ApiProduct {
+  _id: string;
+  name: string;
+  description: string;
+  price: number;
+  category: {
+    _id: string;
+    name: string;
+  };
+  stock: number;
+  images: string[];
+  rating: number;
+}
+
+export interface ProductsApiResponse {
+  success: boolean;
+  data: ApiProduct[];
+  pagination: {
+    page: number;
+    limit: number;
+    totalProducts: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+  };
+}
+
+export function mapApiProduct(product: ApiProduct): Product {
+  return {
+    id: product._id,
+    name: product.name,
+    category: product.category.name,
+    price: product.price,
+    rating: product.rating,
+    description: product.description,
+    stock: product.stock,
+    images: product.images,
+    image: product.images[0],
+  };
 }
 
 export const products: Product[] = [
