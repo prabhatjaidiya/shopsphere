@@ -6,6 +6,7 @@ import { authenticate } from "./middleware/auth.middleware.js";
 import { authorizeRoles } from "./middleware/authorize.middleware.js";
 import cartRoutes from "./routes/cart.routes.js";
 import wishlistRoutes from "./routes/wishlist.routes.js";
+import checkoutRoutes from "./routes/checkout.routes.js";
 
 const app = express();
 
@@ -29,6 +30,8 @@ app.get("/api/health", (req, res) => {
         message: "ShopSphere API is running",
     });
 });
+
+app.use("/api/checkout", checkoutRoutes);
 
 app.get(
     "/api/admin/check",

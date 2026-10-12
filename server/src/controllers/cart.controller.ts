@@ -287,10 +287,15 @@ export const removeCartItem = async (
         cart.items.splice(itemIndex, 1);
         await cart.save();
 
+        const updatedCart = await Cart.findOne({ user: userId }).populate({
+            path: "items.product",
+            select: "name price stock images",
+        });
+
         return res.status(200).json({
             success: true,
             message: "Product removed from cart",
-            data: cart,
+            data: updatedCart,
         });
     } catch (error) {
         console.error("Remove cart item error:", error);
