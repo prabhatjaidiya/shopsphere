@@ -13,9 +13,26 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
     const { id, name, price, rating } = product;
 
-    const handleAddToCart = () => {
-        addToCart(product, 1);
-        setCartMessage(`${product.name} added to your cart!`);
+    const [isAdding, setIsAdding] = useState(false);
+    const [cartError, setCartError] = useState("");
+
+    const handleAddToCart = async () => {
+        setIsAdding(true);
+        setCartMessage("");
+        setCartError("");
+
+        try {
+            await addToCart(product, 1);
+            setCartMessage(`${product.name} added to your cart!`);
+        } catch (error) {
+            setCartError(
+                error instanceof Error
+                    ? error.message
+                    : "Failed to add product to cart."
+            );
+        } finally {
+            setIsAdding(false);
+        }
     };
 
     return (
@@ -54,12 +71,18 @@ const ProductCard = ({ product }: ProductCardProps) => {
                 </p>
 
                 <div className="mt-auto pt-4">
+                    {cartError && (
+                        <p role="alert" className="mt-2 text-sm text-red-600">
+                            {cartError}
+                        </p>
+                    )}
                     <button
                         type="button"
                         onClick={handleAddToCart}
-                        className="block w-full rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-gray-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+                        disabled={isAdding}
+                        className="block w-full rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-60"
                     >
-                        Add to Cart
+                        {isAdding ? "Adding..." : "Add to Cart"}
                     </button>
 
                     {cartMessage && (
