@@ -5,6 +5,7 @@ import ShippingAddressForm, {
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { apiRequest } from "../lib/api";
+import { useNavigate } from "react-router-dom";
 
 type CheckoutResponse = {
   success: boolean;
@@ -23,6 +24,27 @@ type CheckoutResponse = {
   };
 };
 
+type CreateOrderResponse = {
+  success: boolean;
+  message?: string;
+  data?: {
+    _id: string;
+    items: {
+      product: string;
+      name: string;
+      price: number;
+      quantity: number;
+      lineTotal: number;
+    }[];
+    subtotal: number;
+    shippingFee: number;
+    discount: number;
+    total: number;
+    status: string;
+    createdAt: string;
+  };
+};
+
 export default function Checkout() {
   const { cart, subtotal, isLoading, error } = useCart();
   const { token, user } = useAuth();
@@ -33,6 +55,10 @@ export default function Checkout() {
     useState<CheckoutResponse["data"] | null>(null);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const [isValidating, setIsValidating] = useState(false);
+  const navigate = useNavigate();
+
+  const [isCreatingOrder, setIsCreatingOrder] = useState(false);
+  const [orderError, setOrderError] = useState<string | null>(null);
 
   const formatPrice = (price: number) =>
     new Intl.NumberFormat("en-IN", {
@@ -82,6 +108,49 @@ export default function Checkout() {
       throw new Error(message);
     } finally {
       setIsValidating(false);
+    }
+  }
+
+  async function handlePlaceOrder() {
+    if (!token || user?.role !== "customer") {
+      setOrderError("Please log in with a customer account.");
+      return;
+    }
+
+    if (!shippingAddress || !checkoutData) {
+      setOrderError("Please validate your shipping address first.");
+      return;
+    }
+
+    setIsCreatingOrder(true);
+    setOrderError(null);
+
+    try {
+      const response = await apiRequest<CreateOrderResponse>(
+        "/api/orders",
+        {
+          method: "POST",
+          token,
+          body: JSON.stringify({ shippingAddress }),
+        }
+      );
+
+      if (!response.success || !response.data) {
+        throw new Error(response.message || "Failed to create order.");
+      }
+
+      navigate(`/orders/${response.data._id}/confirmation`, {
+        state: { order: response.data },
+        replace: true,
+      });
+    } catch (err) {
+      setOrderError(
+        err instanceof Error
+          ? err.message
+          : "Unable to place your order. Please try again."
+      );
+    } finally {
+      setIsCreatingOrder(false);
     }
   }
 
@@ -218,6 +287,28 @@ export default function Checkout() {
             are not included in this validation step.
           </p>
         </div>
+
+        {checkoutData && (
+          <div className="mt-5">
+            {orderError && (
+              <p
+                role="alert"
+                className="mb-3 rounded-lg bg-red-50 p-3 text-sm text-red-700"
+              >
+                {orderError}
+              </p>
+            )}
+
+            <button
+              type="button"
+              onClick={() => void handlePlaceOrder()}
+              disabled={isCreatingOrder || isValidating}
+              className="w-full rounded-xl bg-indigo-600 px-4 py-3 font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isCreatingOrder ? "Placing order..." : "Place Order"}
+            </button>
+          </div>
+        )}
       </aside>
     </main>
   );
