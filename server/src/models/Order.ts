@@ -28,11 +28,14 @@ export interface IOrder extends Document {
     discount: number;
     total: number;
     status:
-        | "pending"
-        | "confirmed"
-        | "shipped"
-        | "delivered"
-        | "cancelled";
+    | "pending"
+    | "confirmed"
+    | "shipped"
+    | "delivered"
+    | "cancelled";
+    paymentStatus: "pending" | "paid" | "failed";
+    razorpayOrderId?: string;
+    razorpayPaymentId?: string;
 }
 
 const shippingAddressSchema = new Schema<IShippingAddress>(
@@ -170,6 +173,21 @@ const orderSchema = new Schema<IOrder>(
             ],
             default: "pending",
             required: true,
+        },
+        paymentStatus: {
+            type: String,
+            enum: ["pending", "paid", "failed"],
+            default: "pending",
+            required: true,
+        },
+        razorpayOrderId: {
+            type: String,
+            sparse: true,
+            unique: true,
+        },
+        razorpayPaymentId: {
+            type: String,
+            sparse: true,
         },
     },
     {

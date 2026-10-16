@@ -1,4 +1,5 @@
 import { useState } from "react";
+import RazorpayCheckout from "@razorpay/razorpay-js/checkout";
 import ShippingAddressForm, {
   type ShippingAddress,
 } from "../components/ShippingAddressForm";
@@ -24,39 +25,45 @@ type CheckoutResponse = {
   };
 };
 
-type CreateOrderResponse = {
+type CreatePaymentOrderResponse = {
   success: boolean;
   message?: string;
   data?: {
-    _id: string;
-    items: {
-      product: string;
-      name: string;
-      price: number;
-      quantity: number;
-      lineTotal: number;
-    }[];
-    subtotal: number;
-    shippingFee: number;
-    discount: number;
-    total: number;
-    status: string;
-    createdAt: string;
+    paymentAttemptId: string;
+    razorpayOrderId: string;
+    amount: number;
+    currency: string;
+    keyId: string;
   };
+};
+
+type VerifyPaymentResponse = {
+  success: boolean;
+  message?: string;
+  code?: string;
+  data?: {
+    orderId: string;
+  };
+};
+
+type RazorpayPaymentResponse = {
+  razorpay_payment_id: string;
+  razorpay_order_id: string;
+  razorpay_signature: string;
 };
 
 export default function Checkout() {
   const { cart, subtotal, isLoading, error } = useCart();
   const { token, user } = useAuth();
+  const navigate = useNavigate();
 
   const [shippingAddress, setShippingAddress] =
     useState<ShippingAddress | null>(null);
   const [checkoutData, setCheckoutData] =
     useState<CheckoutResponse["data"] | null>(null);
-  const [checkoutError, setCheckoutError] = useState<string | null>(null);
+  const [checkoutError, setCheckoutError] =
+    useState<string | null>(null);
   const [isValidating, setIsValidating] = useState(false);
-  const navigate = useNavigate();
-
   const [isCreatingOrder, setIsCreatingOrder] = useState(false);
   const [orderError, setOrderError] = useState<string | null>(null);
 
@@ -68,19 +75,19 @@ export default function Checkout() {
     }).format(price);
 
   async function handleAddressSubmit(address: ShippingAddress) {
-    console.log("Parent checkout callback called");
-
     if (!token || user?.role !== "customer") {
-      throw new Error("Please log in with a customer account to continue.");
+      throw new Error(
+        "Please log in with a customer account to continue."
+      );
     }
 
     setIsValidating(true);
     setCheckoutError(null);
     setCheckoutData(null);
+    setShippingAddress(null);
+    setOrderError(null);
 
     try {
-      console.log("Sending checkout validation request");
-
       const response = await apiRequest<CheckoutResponse>(
         "/api/checkout/validate",
         {
@@ -112,6 +119,8 @@ export default function Checkout() {
   }
 
   async function handlePlaceOrder() {
+    if (isCreatingOrder) return;
+
     if (!token || user?.role !== "customer") {
       setOrderError("Please log in with a customer account.");
       return;
@@ -126,30 +135,114 @@ export default function Checkout() {
     setOrderError(null);
 
     try {
-      const response = await apiRequest<CreateOrderResponse>(
-        "/api/orders",
-        {
-          method: "POST",
-          token,
-          body: JSON.stringify({ shippingAddress }),
-        }
-      );
+      // Step 1: Create the Razorpay order on our backend.
+      const paymentOrderResponse =
+        await apiRequest<CreatePaymentOrderResponse>(
+          "/api/checkout/create-payment-order",
+          {
+            method: "POST",
+            token,
+            body: JSON.stringify({ shippingAddress }),
+          }
+        );
 
-      if (!response.success || !response.data) {
-        throw new Error(response.message || "Failed to create order.");
+      const paymentOrder = paymentOrderResponse.data;
+
+      if (!paymentOrderResponse.success || !paymentOrder) {
+        throw new Error(
+          paymentOrderResponse.message ||
+            "Could not initialize payment."
+        );
       }
 
-      navigate(`/orders/${response.data._id}/confirmation`, {
-        state: { order: response.data },
-        replace: true,
+      // Step 2: Open Razorpay Checkout.
+      const checkout = await RazorpayCheckout({
+        key: paymentOrder.keyId,
+        order_id: paymentOrder.razorpayOrderId,
+        amount: paymentOrder.amount,
+        currency: paymentOrder.currency,
+        name: "ShopSphere",
+        description: "Your ShopSphere order",
+
+        handler: async (payment: RazorpayPaymentResponse) => {
+          // Keep the button disabled while the backend verifies payment.
+          setOrderError(null);
+
+          try {
+            // Step 3: Verify payment and finalize the ShopSphere order.
+            const verificationResponse =
+              await apiRequest<VerifyPaymentResponse>(
+                "/api/checkout/verify-payment",
+                {
+                  method: "POST",
+                  token,
+                  body: JSON.stringify({
+                    paymentAttemptId: paymentOrder.paymentAttemptId,
+                    razorpay_order_id: payment.razorpay_order_id,
+                    razorpay_payment_id: payment.razorpay_payment_id,
+                    razorpay_signature: payment.razorpay_signature,
+                  }),
+                }
+              );
+
+            if (
+              !verificationResponse.success ||
+              !verificationResponse.data?.orderId
+            ) {
+              if (
+                verificationResponse.code ===
+                "PAID_ORDER_RECOVERY_REQUIRED"
+              ) {
+                setOrderError(
+                  "Your payment was captured, but order finalization needs attention. Please contact support. Do not pay again."
+                );
+                return;
+              }
+
+              throw new Error(
+                verificationResponse.message ||
+                  "Payment verification or order finalization failed."
+              );
+            }
+
+            // Step 4: Navigate only after the backend returns an order ID.
+            navigate(
+              `/orders/${verificationResponse.data.orderId}/confirmation`,
+              { replace: true }
+            );
+          } catch (err) {
+            setOrderError(
+              err instanceof Error
+                ? `${err.message} If your payment was captured, do not pay again; check your order status or contact support.`
+                : "Could not confirm the payment. Check your order status before retrying."
+            );
+          } finally {
+            setIsCreatingOrder(false);
+          }
+        },
+
+        modal: {
+          ondismiss: () => {
+            setIsCreatingOrder(false);
+          },
+        },
       });
+
+      checkout.on("payment.failed", (paymentFailure: any) => {
+        setOrderError(
+          paymentFailure?.error?.description ||
+            "Payment failed. You can try again."
+        );
+        setIsCreatingOrder(false);
+      });
+
+      checkout.open();
     } catch (err) {
       setOrderError(
         err instanceof Error
           ? err.message
-          : "Unable to place your order. Please try again."
+          : "Unable to initialize Razorpay Checkout."
       );
-    } finally {
       setIsCreatingOrder(false);
     }
   }
@@ -169,7 +262,9 @@ export default function Checkout() {
   if (!token || user?.role !== "customer") {
     return (
       <section className="mx-auto max-w-2xl p-6">
-        <h1 className="text-2xl font-bold">Customer login required</h1>
+        <h1 className="text-2xl font-bold">
+          Customer login required
+        </h1>
         <p className="mt-2 text-gray-600">
           Please log in with a customer account to continue.
         </p>
@@ -216,13 +311,15 @@ export default function Checkout() {
             role="status"
             className="rounded-lg bg-green-50 p-4 text-green-800"
           >
-            <p className="font-semibold">Checkout validation successful.</p>
+            <p className="font-semibold">
+              Checkout validation successful.
+            </p>
             <p className="mt-1 text-sm">
               Server-verified subtotal:{" "}
               {formatPrice(checkoutData.subtotal)}
             </p>
             <p className="mt-1 text-xs">
-              No order has been created yet.
+              Payment is required before the order is finalized.
             </p>
           </div>
         )}
@@ -256,7 +353,9 @@ export default function Checkout() {
               </div>
 
               <p className="font-semibold">
-                {formatPrice(item.product.price * item.quantity)}
+                {formatPrice(
+                  item.product.price * item.quantity
+                )}
               </p>
             </div>
           ))}
@@ -264,7 +363,9 @@ export default function Checkout() {
 
         <div className="mt-5 border-t border-gray-200 pt-4">
           <div className="flex justify-between">
-            <span className="text-gray-600">Display subtotal</span>
+            <span className="text-gray-600">
+              Display subtotal
+            </span>
             <span className="font-semibold">
               {formatPrice(subtotal)}
             </span>
@@ -282,9 +383,9 @@ export default function Checkout() {
           )}
 
           <p className="mt-3 text-xs text-gray-500">
-            The displayed subtotal is an estimate. The server verifies
-            current prices and stock. Shipping, taxes, and payment
-            are not included in this validation step.
+            The displayed subtotal is an estimate. The server
+            calculates the payment amount using current product
+            prices and stock.
           </p>
         </div>
 
@@ -305,7 +406,9 @@ export default function Checkout() {
               disabled={isCreatingOrder || isValidating}
               className="w-full rounded-xl bg-indigo-600 px-4 py-3 font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {isCreatingOrder ? "Placing order..." : "Place Order"}
+              {isCreatingOrder
+                ? "Processing payment..."
+                : "Pay with Razorpay"}
             </button>
           </div>
         )}
