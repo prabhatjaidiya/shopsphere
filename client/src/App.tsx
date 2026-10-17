@@ -13,6 +13,9 @@ import Register from "./pages/Register";
 import MyOrders from "./pages/MyOrders";
 import OrderConfirmation from "./pages/OrderConfirmation";
 
+import AdminRoute from "./components/AdminRoute";
+import AdminProducts from "./pages/admin/AdminProducts";
+
 const App = () => {
   return (
     <>
@@ -28,6 +31,9 @@ const App = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/orders" element={<MyOrders />} />
           <Route path="/orders/:orderId/confirmation" element={<OrderConfirmation />} />
+        </Route>
+        <Route element={<AdminRoute />}>
+          <Route path="/admin/products" element={<AdminProducts />} />
         </Route>
       </Routes>
     </>
