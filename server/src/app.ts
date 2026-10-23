@@ -9,6 +9,7 @@ import wishlistRoutes from "./routes/wishlist.routes.js";
 import checkoutRoutes from "./routes/checkout.routes.js";
 import orderRoutes from "./routes/order.routes.js";
 import categoryRoutes from "./routes/category.routes.js";
+import adminOrderRoutes from "./routes/admin.order.routes.js";
 
 const app = express();
 
@@ -29,6 +30,8 @@ app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/orders", orderRoutes);
 
 app.use("/api/categories", categoryRoutes);
+
+app.use("/api/admin/orders", adminOrderRoutes);
 
 app.get("/api/health", (req, res) => {
     res.status(200).json({

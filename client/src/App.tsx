@@ -15,6 +15,7 @@ import OrderConfirmation from "./pages/OrderConfirmation";
 
 import AdminRoute from "./components/AdminRoute";
 import AdminProducts from "./pages/admin/AdminProducts";
+import AdminOrders from "./pages/admin/AdminOrders";
 
 const App = () => {
   return (
@@ -34,6 +35,7 @@ const App = () => {
         </Route>
         <Route element={<AdminRoute />}>
           <Route path="/admin/products" element={<AdminProducts />} />
+          <Route path="/admin/orders" element={<AdminOrders />} />
         </Route>
       </Routes>
     </>
