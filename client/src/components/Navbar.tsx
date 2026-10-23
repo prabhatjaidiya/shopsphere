@@ -32,6 +32,13 @@ const Navbar = () => {
           <NavLink to="/orders" className="text-sm font-medium text-gray-600 hover:text-black">
             Orders
           </NavLink>
+          <NavLink
+            to="/wishlist"
+            className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100 hover:text-red-500"
+          >
+            <span aria-hidden="true">♡</span>
+            <span>Wishlist</span>
+          </NavLink>
         </div>
 
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">

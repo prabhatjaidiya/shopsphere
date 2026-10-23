@@ -1,60 +1,109 @@
+import { useEffect, useState } from "react";
 import ProductCard from "./ProductCard";
+import { apiRequest } from "../../lib/api";
+import { mapApiProduct } from "../../data/products";
+import type { ApiProduct, Product } from "../../data/products";
 
-const products = [
-    {
-        id: 1,
-        name: "Wireless Headphones",
-        price: 2499,
-        rating: 4.4,
-    },
-    {
-        id: 2,
-        name: "Mechanical Keyboard",
-        price: 3499,
-        rating: 4.7,
-    },
-    {
-        id: 3,
-        name: "Running Shoes",
-        price: 2999,
-        rating: 4.5,
-    },
-    {
-        id: 4,
-        name: "Smart Watch",
-        price: 4999,
-        rating: 4.6,
-    },
-];
+type ProductsResponse = {
+  success: boolean;
+  data: ApiProduct[];
+};
 
 const FeaturedProducts = () => {
-    return (
-        <section className="bg-gray-50">
-            <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
-                <div className="mb-8">
-                    <h2 className="text-3xl font-bold text-gray-900">
-                        Featured Products
-                    </h2>
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
 
-                    <p className="mt-2 text-gray-600">
-                        Discover some of our most popular products.
-                    </p>
-                </div>
+  useEffect(() => {
+    let cancelled = false;
 
-                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                    {products.map((product) => (
-                        <ProductCard
-                            key={product.id}
-                            product={{
-                                ...product,
-                                category: "Electronics",
-                            }}
-                        />
-                    ))}
-                </div>
-            </div>
-        </section>
-    );
+    const fetchProducts = async () => {
+      try {
+        setIsLoading(true);
+        setError("");
+
+        const response = await apiRequest<ProductsResponse>(
+          "/api/products"
+        );
+
+        if (!response.success) {
+          throw new Error("Could not load featured products.");
+        }
+
+        if (!cancelled) {
+          setProducts(response.data.slice(0, 4).map(mapApiProduct));
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setError(
+            err instanceof Error
+              ? err.message
+              : "Something went wrong while loading products."
+          );
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    void fetchProducts();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  return (
+    <section className="bg-gray-50">
+      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mb-8">
+          <h2 className="text-3xl font-bold text-gray-900">
+            Featured Products
+          </h2>
+          <p className="mt-2 text-gray-600">
+            Discover some of our most popular products.
+          </p>
+        </div>
+
+        {isLoading ? (
+          <div
+            className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4"
+            aria-label="Loading products"
+          >
+            {Array.from({ length: 4 }).map((_, index) => (
+              <div
+                key={index}
+                className="h-80 animate-pulse rounded-xl bg-gray-200"
+              />
+            ))}
+          </div>
+        ) : error ? (
+          <div className="rounded-lg border border-red-200 bg-red-50 p-6">
+            <p className="text-sm text-red-700">{error}</p>
+            <button
+              type="button"
+              onClick={() => window.location.reload()}
+              className="mt-3 rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700"
+            >
+              Try again
+            </button>
+          </div>
+        ) : products.length === 0 ? (
+          <p className="rounded-lg bg-white p-6 text-gray-600">
+            No products are available yet.
+          </p>
+        ) : (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {products.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  );
 };
 
 export default FeaturedProducts;

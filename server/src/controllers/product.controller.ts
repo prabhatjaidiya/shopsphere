@@ -8,7 +8,7 @@ import Order from "../models/Order.js";
 
 export const getProducts = async (req: Request, res: Response) => {
     try {
-        // 1. Read query parameters
+        // 1. Read and validate pagination parameters
         const page = Math.max(Number(req.query.page) || 1, 1);
         const limit = Math.min(
             Math.max(Number(req.query.limit) || 10, 1),
@@ -25,10 +25,89 @@ export const getProducts = async (req: Request, res: Response) => {
                 ? req.query.category.trim()
                 : "";
 
-        // 2. Build MongoDB filter
+        // 2. Validate price filters
+        const minPriceParam = req.query.minPrice;
+        const maxPriceParam = req.query.maxPrice;
+
+        if (
+            minPriceParam !== undefined &&
+            (
+                typeof minPriceParam !== "string" ||
+                minPriceParam.trim() === "" ||
+                !Number.isFinite(Number(minPriceParam)) ||
+                Number(minPriceParam) < 0
+            )
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Minimum price must be a valid non-negative number",
+            });
+        }
+
+        if (
+            maxPriceParam !== undefined &&
+            (
+                typeof maxPriceParam !== "string" ||
+                maxPriceParam.trim() === "" ||
+                !Number.isFinite(Number(maxPriceParam)) ||
+                Number(maxPriceParam) < 0
+            )
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Maximum price must be a valid non-negative number",
+            });
+        }
+
+        const minPrice =
+            minPriceParam !== undefined
+                ? Number(minPriceParam)
+                : undefined;
+
+        const maxPrice =
+            maxPriceParam !== undefined
+                ? Number(maxPriceParam)
+                : undefined;
+
+        if (
+            minPrice !== undefined &&
+            maxPrice !== undefined &&
+            minPrice > maxPrice
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Minimum price cannot exceed maximum price",
+            });
+        }
+
+        // 3. Validate sorting against supported options
+        const sort =
+            typeof req.query.sort === "string"
+                ? req.query.sort
+                : "popular";
+
+        const sortOptionsByKey: Record<
+            string,
+            Record<string, 1 | -1>
+        > = {
+            popular: { createdAt: -1, _id: -1 },
+            "price-low": { price: 1, _id: 1 },
+            "price-high": { price: -1, _id: -1 },
+            rating: { rating: -1, _id: -1 },
+        };
+
+        if (!Object.prototype.hasOwnProperty.call(sortOptionsByKey, sort)) {
+            return res.status(400).json({
+                success: false,
+                message: "Unsupported sort option",
+            });
+        }
+
+        const sortOptions = sortOptionsByKey[sort];
+
+        // 4. Build MongoDB filter
         const filter: Record<string, unknown> = {};
 
-        // Search by product name
         if (search) {
             const escapedSearch = search.replace(
                 /[.*+?^${}()|[\]\\]/g,
@@ -41,7 +120,6 @@ export const getProducts = async (req: Request, res: Response) => {
             };
         }
 
-        // Filter by category
         if (category) {
             if (!mongoose.Types.ObjectId.isValid(category)) {
                 return res.status(400).json({
@@ -53,14 +131,32 @@ export const getProducts = async (req: Request, res: Response) => {
             filter.category = new mongoose.Types.ObjectId(category);
         }
 
-        // 3. Calculate pagination
+        // Apply both price bounds together when provided
+        if (minPrice !== undefined || maxPrice !== undefined) {
+            const priceFilter: {
+                $gte?: number;
+                $lte?: number;
+            } = {};
+
+            if (minPrice !== undefined) {
+                priceFilter.$gte = minPrice;
+            }
+
+            if (maxPrice !== undefined) {
+                priceFilter.$lte = maxPrice;
+            }
+
+            filter.price = priceFilter;
+        }
+
+        // 5. Calculate pagination
         const skip = (page - 1) * limit;
 
-        // 4. Fetch products and total count
+        // 6. Filter, sort, and paginate on the database
         const [products, totalProducts] = await Promise.all([
             Product.find(filter)
                 .populate("category")
-                .sort({ createdAt: -1 })
+                .sort(sortOptions)
                 .skip(skip)
                 .limit(limit)
                 .lean(),
@@ -68,10 +164,10 @@ export const getProducts = async (req: Request, res: Response) => {
             Product.countDocuments(filter),
         ]);
 
-        // 5. Calculate pagination information
+        // 7. Calculate pagination metadata
         const totalPages = Math.ceil(totalProducts / limit);
 
-        // 6. Send response
+        // 8. Return the existing response structure
         return res.status(200).json({
             success: true,
             data: products,

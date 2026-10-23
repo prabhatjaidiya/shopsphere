@@ -1,6 +1,8 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
+import { useAuth } from "../../context/AuthContext";
+import { useWishlist } from "../../context/WishlistContext";
 import type { Product } from "../../data/products";
 
 interface ProductCardProps {
@@ -12,6 +14,35 @@ const ProductCard = ({ product }: ProductCardProps) => {
     const [cartMessage, setCartMessage] = useState("");
 
     const { id, name, price, rating } = product;
+
+    const { token } = useAuth();
+    const { wishlistIds, pendingIds, toggleWishlist } = useWishlist();
+    const navigate = useNavigate();
+
+    const [wishlistError, setWishlistError] = useState("");
+
+    const productId = String(id);
+    const isWishlisted = wishlistIds.has(productId);
+    const isWishlistPending = pendingIds.has(productId);
+
+    const handleToggleWishlist = async () => {
+        setWishlistError("");
+
+        if (!token) {
+            navigate("/login");
+            return;
+        }
+
+        try {
+            await toggleWishlist(productId);
+        } catch (error) {
+            setWishlistError(
+                error instanceof Error
+                    ? error.message
+                    : "Failed to update wishlist."
+            );
+        }
+    };
 
     const [isAdding, setIsAdding] = useState(false);
     const [cartError, setCartError] = useState("");
@@ -37,17 +68,61 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
     return (
         <article className="group flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg">
-            <Link
-                to={`/products/${id}`}
-                aria-label={`View details for ${name}`}
-                className="block"
-            >
-                <div className="flex aspect-[4/3] w-full items-center justify-center overflow-hidden bg-gray-100">
-                    <span className="text-6xl transition-transform duration-300 group-hover:scale-110">
-                        🛍️
-                    </span>
-                </div>
-            </Link>
+            <div className="relative">
+                <Link
+                    to={`/products/${id}`}
+                    aria-label={`View details for ${name}`}
+                    className="block"
+                >
+                    <div className="relative aspect-[4/3] w-full overflow-hidden rounded-t-2xl bg-gray-100">
+                        {product.images?.[0] ? (
+                            <img
+                                src={product.images[0]}
+                                alt={name}
+                                loading="lazy"
+                                onError={(event) => {
+                                    event.currentTarget.style.display = "none";
+                                }}
+                                className="block h-full w-full object-contain p-3"
+                            />
+                        ) : (
+                            <div className="flex h-full w-full items-center justify-center">
+                                <span className="text-5xl" aria-hidden="true">
+                                    🛍️
+                                </span>
+                            </div>
+                        )}
+
+                        <button
+                            type="button"
+                            onClick={handleToggleWishlist}
+                            disabled={isWishlistPending}
+                            aria-label={
+                                isWishlisted ? "Remove from wishlist" : "Add to wishlist"
+                            }
+                            aria-pressed={isWishlisted}
+                            className={`absolute right-3 top-3 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white text-2xl shadow-md transition hover:scale-105 disabled:opacity-60 ${isWishlisted ? "text-red-500" : "text-gray-500"
+                                }`}
+                        >
+                            {isWishlistPending ? "…" : isWishlisted ? "♥" : "♡"}
+                        </button>
+                    </div>
+                </Link>
+
+                <button
+                    type="button"
+                    onClick={handleToggleWishlist}
+                    disabled={isWishlistPending}
+                    aria-label={
+                        isWishlisted ? "Remove from wishlist" : "Add to wishlist"
+                    }
+                    aria-pressed={isWishlisted}
+                    className={`absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-full bg-white text-2xl shadow-sm transition hover:scale-110 disabled:cursor-not-allowed disabled:opacity-60 ${isWishlisted ? "text-red-500" : "text-gray-500"
+                        }`}
+                >
+                    {isWishlistPending ? "…" : isWishlisted ? "♥" : "♡"}
+                </button>
+            </div>
 
             <div className="flex flex-1 flex-col p-4 sm:p-5">
                 <Link
@@ -74,6 +149,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
                     {cartError && (
                         <p role="alert" className="mt-2 text-sm text-red-600">
                             {cartError}
+                        </p>
+                    )}
+                    {wishlistError && (
+                        <p role="alert" className="mt-2 text-sm text-red-600">
+                            {wishlistError}
                         </p>
                     )}
                     <button

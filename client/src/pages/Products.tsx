@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { apiRequest } from "../lib/api";
 import ProductCard from "../components/home/ProductCard";
 import type { Product } from "../data/products";
@@ -33,14 +32,6 @@ type ProductsResponse = {
   };
 };
 
-const categories = [
-  "All",
-  "Electronics",
-  "Fashion",
-  "Shoes",
-  "Accessories",
-];
-
 const Products = () => {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
@@ -49,21 +40,108 @@ const Products = () => {
   const [sort, setSort] = useState("popular");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [products, setProducts] = useState<ApiProduct[]>([]);
+  const [categoryData, setCategoryData] = useState<ApiCategory[]>([]);
+  const [page, setPage] = useState(1);
+  const [pagination, setPagination] =
+    useState<ProductsResponse["pagination"] | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [retryCount, setRetryCount] = useState(0);
+
+  const categoryOptions = ["All", ...categoryData.map((item) => item.name)];
+
+  // Load categories so category filters use real MongoDB IDs.
   useEffect(() => {
-    const fetchProducts = async () => {
+    let cancelled = false;
+
+    const fetchCategories = async () => {
       try {
+        const response = await apiRequest<{
+          success: boolean;
+          data: ApiCategory[];
+        }>("/api/categories");
+
+        if (!cancelled) {
+          setCategoryData(response.data);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          console.error("Failed to fetch categories:", error);
+        }
+      }
+    };
+
+    void fetchCategories();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Fetch filtered, sorted and paginated products from the backend.
+  useEffect(() => {
+    let cancelled = false;
+
+    const fetchProducts = async () => {
+      setIsLoading(true);
+      setErrorMessage("");
+
+      try {
+        const params = new URLSearchParams({
+          page: String(page),
+          limit: "12",
+          sort,
+          minPrice: String(minPrice),
+          maxPrice: String(maxPrice),
+        });
+
+        if (search.trim()) {
+          params.set("search", search.trim());
+        }
+
+        if (category !== "All") {
+          const selectedCategory = categoryData.find(
+            (item) => item.name === category
+          );
+
+          if (!selectedCategory) {
+            throw new Error("Selected category could not be found. Please reset the filters and try again.");
+          }
+
+          params.set("category", selectedCategory._id);
+        }
+
         const response = await apiRequest<ProductsResponse>(
-          "/api/products?page=1&limit=100"
+          `/api/products?${params.toString()}`
         );
 
-        setProducts(response.data);
+        if (!cancelled) {
+          setProducts(response.data);
+          setPagination(response.pagination);
+        }
       } catch (error) {
-        console.error("Failed to fetch products:", error);
+        if (!cancelled) {
+          setProducts([]);
+          setPagination(null);
+          setErrorMessage(
+            error instanceof Error
+              ? error.message
+              : "Unable to load products. Please try again."
+          );
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
       }
     };
 
     void fetchProducts();
-  }, []);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [page, search, category, categoryData, minPrice, maxPrice, sort, retryCount]);
 
   const displayProducts: Product[] = products.map((product) => ({
     ...product,
@@ -71,60 +149,42 @@ const Products = () => {
     category: product.category.name,
   }));
 
-  // -----------------------------
-  // Filter products
-  // -----------------------------
-  const filteredProducts = displayProducts.filter((product) => {
-    const matchesSearch = product.name
-      .toLowerCase()
-      .includes(search.toLowerCase());
+  // Filtering and sorting are handled by the backend.
+  const sortedProducts = displayProducts;
 
-    const matchesCategory =
-      product.category === category || category === "All";
-
-    const matchesPrice =
-      product.price >= minPrice && product.price <= maxPrice;
-
-    return matchesSearch && matchesCategory && matchesPrice;
-  });
-
-  // -----------------------------
-  // Sort products
-  // -----------------------------
-  const sortedProducts = [...filteredProducts].sort((a, b) => {
-    switch (sort) {
-      case "price-low":
-        return a.price - b.price;
-
-      case "price-high":
-        return b.price - a.price;
-
-      case "rating":
-        return b.rating - a.rating;
-
-      default:
-        return 0;
-    }
-  });
-
-  // -----------------------------
-  // Reset
-  // -----------------------------
   const resetFilters = () => {
     setSearch("");
     setCategory("All");
     setMinPrice(0);
     setMaxPrice(5000000);
     setSort("popular");
+    setPage(1);
     setIsFilterOpen(false);
   };
 
-  // -----------------------------
-  // Category
-  // -----------------------------
   const handleCategoryChange = (item: string) => {
     setCategory(item);
+    setPage(1);
     setIsFilterOpen(false);
+  };
+
+  const handleMinPriceChange = (value: number) => {
+    if (value <= maxPrice) {
+      setMinPrice(value);
+      setPage(1);
+    }
+  };
+
+  const handleMaxPriceChange = (value: number) => {
+    if (value >= minPrice) {
+      setMaxPrice(value);
+      setPage(1);
+    }
+  };
+
+  const handleSortChange = (value: string) => {
+    setSort(value);
+    setPage(1);
   };
 
   return (
@@ -155,7 +215,7 @@ const Products = () => {
               </p>
 
               <p className="mt-1 text-2xl font-bold text-slate-900">
-                {products.length}
+                {pagination?.totalProducts ?? 0}
               </p>
             </div>
           </div>
@@ -185,7 +245,7 @@ const Products = () => {
 
             <select
               value={sort}
-              onChange={(e) => setSort(e.target.value)}
+              onChange={(e) => handleSortChange(e.target.value)}
               className="block h-12 min-w-0 w-full rounded-2xl border border-slate-200 bg-white px-4 text-center text-sm font-medium text-slate-700 outline-none shadow-sm"
             >
               <option value="popular">Popular</option>
@@ -227,7 +287,7 @@ const Products = () => {
                 </h3>
 
                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                  {categories.map((item) => (
+                  {categoryOptions.map((item) => (
                     <button
                       key={item}
                       type="button"
@@ -265,9 +325,7 @@ const Products = () => {
                     onChange={(e) => {
                       const value = Number(e.target.value);
 
-                      if (value <= maxPrice) {
-                        setMinPrice(value);
-                      }
+                      handleMinPriceChange(value);
                     }}
                     className="w-full accent-blue-600"
                   />
@@ -281,9 +339,7 @@ const Products = () => {
                     onChange={(e) => {
                       const value = Number(e.target.value);
 
-                      if (value >= minPrice) {
-                        setMaxPrice(value);
-                      }
+                      handleMaxPriceChange(value);
                     }}
                     className="w-full accent-blue-600"
                   />
@@ -326,11 +382,11 @@ const Products = () => {
                 </h3>
 
                 <div className="space-y-2">
-                  {categories.map((item) => (
+                  {categoryOptions.map((item) => (
                     <button
                       key={item}
                       type="button"
-                      onClick={() => setCategory(item)}
+                      onClick={() => handleCategoryChange(item)}
                       className={`flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-sm ${category === item
                         ? "bg-blue-50 text-blue-700"
                         : "text-slate-600 hover:bg-slate-50"
@@ -365,9 +421,7 @@ const Products = () => {
                     onChange={(e) => {
                       const value = Number(e.target.value);
 
-                      if (value <= maxPrice) {
-                        setMinPrice(value);
-                      }
+                      handleMinPriceChange(value);
                     }}
                     className="w-full accent-blue-600"
                   />
@@ -381,9 +435,7 @@ const Products = () => {
                     onChange={(e) => {
                       const value = Number(e.target.value);
 
-                      if (value >= minPrice) {
-                        setMaxPrice(value);
-                      }
+                      handleMaxPriceChange(value);
                     }}
                     className="w-full accent-blue-600"
                   />
@@ -404,14 +456,17 @@ const Products = () => {
                       type="text"
                       placeholder="🔍  Search products..."
                       value={search}
-                      onChange={(e) => setSearch(e.target.value)}
+                      onChange={(e) => {
+                        setSearch(e.target.value);
+                        setPage(1);
+                      }}
                       className="block h-12 w-full min-w-0 rounded-xl border border-slate-200 bg-white px-4 text-sm outline-none shadow-sm transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
                     />
                   </div>
 
                   <select
                     value={sort}
-                    onChange={(e) => setSort(e.target.value)}
+                    onChange={(e) => handleSortChange(e.target.value)}
                     className="hidden h-12 min-w-[150px] rounded-xl border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 outline-none shadow-sm transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100 xl:block"
                   >
                     <option value="popular">Popular</option>
@@ -423,7 +478,7 @@ const Products = () => {
 
                 {/* Category Pills */}
                 <div className="mt-2 flex w-full max-w-full gap-2 overflow-x-auto pb-1">
-                  {categories.map((item) => (
+                  {categoryOptions.map((item) => (
                     <button
                       key={item}
                       type="button"
@@ -444,7 +499,7 @@ const Products = () => {
                 <p className="text-sm text-slate-500">
                   Showing{" "}
                   <span className="font-semibold text-slate-900">
-                    {sortedProducts.length}
+                    {pagination?.totalProducts ?? 0}
                   </span>{" "}
                   products
                 </p>
@@ -457,14 +512,63 @@ const Products = () => {
               </div>
 
               {/* Product Grid */}
-              {sortedProducts.length > 0 ? (
-                <div className="grid w-full min-w-0 max-w-full grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                  {sortedProducts.map((product) => (
-                    <div key={product.id} className="min-w-0 max-w-full">
-                      <ProductCard product={product} />
-                    </div>
-                  ))}
+              {isLoading ? (
+                <div
+                  className="rounded-2xl border border-slate-200 bg-white px-6 py-16 text-center text-slate-600"
+                  role="status"
+                >
+                  Loading products...
                 </div>
+              ) : errorMessage ? (
+                <div
+                  className="rounded-2xl border border-red-200 bg-white px-6 py-10 text-center"
+                  role="alert"
+                >
+                  <p className="font-semibold text-red-700">{errorMessage}</p>
+                  <button
+                    type="button"
+                    onClick={() => setRetryCount((count) => count + 1)}
+                    className="mt-4 rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white"
+                  >
+                    Retry
+                  </button>
+                </div>
+              ) : sortedProducts.length > 0 ? (
+                <>
+                  <div className="grid w-full min-w-0 max-w-full grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    {sortedProducts.map((product) => (
+                      <div key={product.id} className="min-w-0 max-w-full">
+                        <ProductCard product={product} />
+                      </div>
+                    ))}
+                  </div>
+
+                  {pagination && (
+                    <div className="mt-8 flex items-center justify-center gap-4">
+                      <button
+                        type="button"
+                        disabled={!pagination.hasPreviousPage}
+                        onClick={() => setPage((current) => Math.max(1, current - 1))}
+                        className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 disabled:cursor-not-allowed disabled:opacity-40"
+                      >
+                        Previous
+                      </button>
+
+                      <span className="text-sm text-slate-600">
+                        Page {pagination.page} of {Math.max(pagination.totalPages, 1)}
+                      </span>
+
+                      <button
+                        type="button"
+                        disabled={!pagination.hasNextPage}
+                        onClick={() => setPage((current) => current + 1)}
+                        className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 disabled:cursor-not-allowed disabled:opacity-40"
+                      >
+                        Next
+                      </button>
+                    </div>
+                  )}
+                </>
               ) : (
                 <div className="w-full rounded-2xl border border-slate-200 bg-white px-6 py-16 text-center shadow-sm">
                   <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-slate-100 text-2xl">
