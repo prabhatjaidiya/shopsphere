@@ -3,19 +3,59 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
+const isValidEmail = (email: string): boolean =>
+  email.length <= 254 &&
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+const isPlainObject = (value: unknown): value is Record<string, unknown> =>
+  typeof value === "object" &&
+  value !== null &&
+  !Array.isArray(value);
+
 export const register = async (req: Request, res: Response) => {
   try {
+    if (!isPlainObject(req.body)) {
+      return res.status(400).json({ message: "Invalid request body" });
+    }
+
     const { name, email, password } = req.body;
 
-    // Validate required fields
-    if (!name || !email || !password) {
+    if (
+      typeof name !== "string" ||
+      typeof email !== "string" ||
+      typeof password !== "string"
+    ) {
+      return res.status(400).json({
+        message: "Name, email and password must be strings",
+      });
+    }
+
+    const normalizedName = name.trim();
+    const normalizedEmail = email.trim().toLowerCase();
+
+    if (!normalizedName || !normalizedEmail || !password) {
       return res.status(400).json({
         message: "Name, email and password are required",
       });
     }
 
-    // Check if user already exists
-    const existingUser = await User.findOne({ email });
+    if (normalizedName.length < 2 || normalizedName.length > 50) {
+      return res.status(400).json({
+        message: "Name must be between 2 and 50 characters",
+      });
+    }
+
+    if (!isValidEmail(normalizedEmail)) {
+      return res.status(400).json({ message: "Invalid email address" });
+    }
+
+    if (password.length < 8 || password.length > 72) {
+      return res.status(400).json({
+        message: "Password must be between 8 and 72 characters",
+      });
+    }
+
+    const existingUser = await User.findOne({ email: normalizedEmail });
 
     if (existingUser) {
       return res.status(409).json({
@@ -23,17 +63,14 @@ export const register = async (req: Request, res: Response) => {
       });
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user
     const user = await User.create({
-      name,
-      email,
+      name: normalizedName,
+      email: normalizedEmail,
       password: hashedPassword,
     });
 
-    // Return safe response
     return res.status(201).json({
       message: "User registered successfully",
       user: {
@@ -44,6 +81,17 @@ export const register = async (req: Request, res: Response) => {
       },
     });
   } catch (error) {
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      error.code === 11000
+    ) {
+      return res.status(409).json({
+        message: "User with this email already exists",
+      });
+    }
+
     console.error("Registration error:", error);
 
     return res.status(500).json({
@@ -54,17 +102,35 @@ export const register = async (req: Request, res: Response) => {
 
 export const login = async (req: Request, res: Response) => {
   try {
+    if (!isPlainObject(req.body)) {
+      return res.status(400).json({ message: "Invalid request body" });
+    }
+
     const { email, password } = req.body;
 
-    // Validate input
-    if (!email || !password) {
+    if (typeof email !== "string" || typeof password !== "string") {
+      return res.status(400).json({
+        message: "Email and password must be strings",
+      });
+    }
+
+    const normalizedEmail = email.trim().toLowerCase();
+
+    if (!normalizedEmail || !password) {
       return res.status(400).json({
         message: "Email and password are required",
       });
     }
 
-    // Find user and explicitly include password
-    const user = await User.findOne({ email }).select("+password");
+    if (!isValidEmail(normalizedEmail) || password.length > 72) {
+      return res.status(400).json({
+        message: "Invalid email or password format",
+      });
+    }
+
+    const user = await User.findOne({
+      email: normalizedEmail,
+    }).select("+password");
 
     if (!user) {
       return res.status(401).json({
@@ -72,7 +138,6 @@ export const login = async (req: Request, res: Response) => {
       });
     }
 
-    // Compare password
     const isPasswordValid = await bcrypt.compare(
       password,
       user.password
@@ -84,14 +149,12 @@ export const login = async (req: Request, res: Response) => {
       });
     }
 
-    // Get JWT secret
     const JWT_SECRET = process.env.JWT_SECRET;
 
     if (!JWT_SECRET) {
       throw new Error("JWT_SECRET is not configured");
     }
 
-    // Generate JWT
     const token = jwt.sign(
       {
         userId: user._id.toString(),
@@ -103,7 +166,6 @@ export const login = async (req: Request, res: Response) => {
       }
     );
 
-    // Return safe response
     return res.status(200).json({
       message: "Login successful",
       token,

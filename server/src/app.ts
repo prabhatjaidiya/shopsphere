@@ -1,4 +1,5 @@
 import express from "express";
+import helmet from "helmet";
 import cors from "cors";
 import productRoutes from "./routes/product.routes.js";
 import authRoutes from "./routes/auth.routes.js";
@@ -13,7 +14,13 @@ import adminOrderRoutes from "./routes/admin.order.routes.js";
 
 const app = express();
 
+app.use(helmet());
+
 app.use(express.json());
+
+app.use((req, res, next) => {
+    next();
+});
 
 app.use(cors({
     origin: "http://localhost:5173",

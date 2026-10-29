@@ -9,23 +9,105 @@ import Order from "../models/Order.js";
 export const getProducts = async (req: Request, res: Response) => {
     try {
         // 1. Read and validate pagination parameters
-        const page = Math.max(Number(req.query.page) || 1, 1);
-        const limit = Math.min(
-            Math.max(Number(req.query.limit) || 10, 1),
-            100
-        );
+        const pageParam = req.query.page;
+        const limitParam = req.query.limit;
+
+        if (
+            pageParam !== undefined &&
+            (
+                typeof pageParam !== "string" ||
+                !/^[1-9]\d*$/.test(pageParam) ||
+                !Number.isSafeInteger(Number(pageParam))
+            )
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Page must be a positive integer",
+            });
+        }
+
+        if (
+            limitParam !== undefined &&
+            (
+                typeof limitParam !== "string" ||
+                !/^[1-9]\d*$/.test(limitParam) ||
+                !Number.isSafeInteger(Number(limitParam)) ||
+                Number(limitParam) > 100
+            )
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Limit must be an integer between 1 and 100",
+            });
+        }
+
+        const page = pageParam === undefined ? 1 : Number(pageParam);
+        const limit = limitParam === undefined ? 10 : Number(limitParam);
+
+        const searchParam = req.query.search;
+        const searchArrayParam = req.query["search[]"];
+
+        if (
+            searchParam !== undefined &&
+            typeof searchParam !== "string"
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Search must be a string",
+            });
+        }
+
+        if (searchArrayParam !== undefined) {
+            return res.status(400).json({
+                success: false,
+                message: "Search must be a string",
+            });
+        }
 
         const search =
-            typeof req.query.search === "string"
-                ? req.query.search.trim()
+            typeof searchParam === "string"
+                ? searchParam.trim()
                 : "";
 
+        const categoryParam = req.query.category;
+        const categoryArrayParam = req.query["category[]"];
+
+        if (
+            categoryParam !== undefined &&
+            typeof categoryParam !== "string"
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Category must be a string",
+            });
+        }
+
+        if (categoryArrayParam !== undefined) {
+            return res.status(400).json({
+                success: false,
+                message: "Category must be a string",
+            });
+        }
+
         const category =
-            typeof req.query.category === "string"
-                ? req.query.category.trim()
+            typeof categoryParam === "string"
+                ? categoryParam.trim()
                 : "";
 
         // 2. Validate price filters
+        const minPriceArrayParam = req.query["minPrice[]"];
+        const maxPriceArrayParam = req.query["maxPrice[]"];
+
+        if (
+            minPriceArrayParam !== undefined ||
+            maxPriceArrayParam !== undefined
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Price filters must be single numeric values",
+            });
+        }
+
         const minPriceParam = req.query.minPrice;
         const maxPriceParam = req.query.maxPrice;
 
@@ -81,9 +163,28 @@ export const getProducts = async (req: Request, res: Response) => {
         }
 
         // 3. Validate sorting against supported options
+        if (req.query["sort[]"] !== undefined) {
+            return res.status(400).json({
+                success: false,
+                message: "Sort must be a string",
+            });
+        }
+
+        const sortParam = req.query.sort;
+
+        if (
+            sortParam !== undefined &&
+            typeof sortParam !== "string"
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Sort must be a string",
+            });
+        }
+
         const sort =
-            typeof req.query.sort === "string"
-                ? req.query.sort
+            typeof sortParam === "string"
+                ? sortParam
                 : "popular";
 
         const sortOptionsByKey: Record<
@@ -242,17 +343,35 @@ export const getProductById = async (
 
 export const createProduct = async (req: Request, res: Response) => {
     try {
+        if (
+            typeof req.body !== "object" ||
+            req.body === null ||
+            Array.isArray(req.body)
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "A valid product object is required",
+            });
+        }
+
         const { name, description, price, category, stock, images, rating } = req.body;
 
         if (
             typeof name !== "string" || !name.trim() ||
             typeof description !== "string" || !description.trim() ||
-            typeof category !== "string" ||
-            price === undefined || stock === undefined
+            price === undefined || stock === undefined ||
+            category === undefined || category === null || category === ""
         ) {
             return res.status(400).json({
                 success: false,
                 message: "Name, description, price, category, and stock are required",
+            });
+        }
+
+        if (typeof category !== "string") {
+            return res.status(400).json({
+                success: false,
+                message: "Category must be a string",
             });
         }
 
