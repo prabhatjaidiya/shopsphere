@@ -149,6 +149,7 @@ export const removeFromWishlist = async (
 
         wishlist.products.splice(index, 1);
         await wishlist.save();
+        await wishlist.populate("products", "name price stock images");
 
         return res.status(200).json({
             success: true,

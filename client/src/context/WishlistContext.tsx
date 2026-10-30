@@ -38,14 +38,14 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let cancelled = false;
 
-    if (!token) {
-      setWishlistIds(new Set());
-      setIsLoading(false);
-      setError("");
-      return;
-    }
-
     const fetchWishlist = async () => {
+      if (!token) {
+        setWishlistIds(new Set());
+        setIsLoading(false);
+        setError("");
+        return;
+      }
+
       setIsLoading(true);
       setError("");
 
@@ -63,20 +63,23 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
       } catch (err) {
         if (!cancelled) {
           setError(
-            err instanceof Error
-              ? err.message
-              : "Failed to load wishlist."
+            err instanceof Error ? err.message : "Failed to load wishlist."
           );
         }
       } finally {
-        if (!cancelled) setIsLoading(false);
+        if (!cancelled) {
+          setIsLoading(false);
+        }
       }
     };
 
-    void fetchWishlist();
+    const timer = setTimeout(() => {
+      void fetchWishlist();
+    }, 0);
 
     return () => {
       cancelled = true;
+      clearTimeout(timer);
     };
   }, [token]);
 
@@ -125,7 +128,7 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
             : "Failed to update wishlist.";
 
         setError(message);
-        throw new Error(message);
+        throw new Error(message, { cause: err });
       } finally {
         setPendingIds((current) => {
           const next = new Set(current);
@@ -152,6 +155,7 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useWishlist() {
   const context = useContext(WishlistContext);
 

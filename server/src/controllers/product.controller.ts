@@ -1,10 +1,16 @@
 import { Request, Response } from "express";
 import mongoose from "mongoose";
 import Product from "../models/Product.js";
-import "../models/Category.js";
 import Category from "../models/Category.js";
 import Cart from "../models/Cart.js";
 import Order from "../models/Order.js";
+import Wishlist from "../models/Wishlist.js";
+
+const isValidPrice = (price: unknown): price is number =>
+    typeof price === "number" &&
+    Number.isFinite(price) &&
+    price >= 0 &&
+    Math.abs(price * 100 - Math.round(price * 100)) < 1e-8;
 
 export const getProducts = async (req: Request, res: Response) => {
     try {
@@ -253,6 +259,13 @@ export const getProducts = async (req: Request, res: Response) => {
         // 5. Calculate pagination
         const skip = (page - 1) * limit;
 
+        if (!Number.isSafeInteger(skip)) {
+            return res.status(400).json({
+                success: false,
+                message: "Pagination offset is too large",
+            });
+        }
+
         // 6. Filter, sort, and paginate on the database
         const [products, totalProducts] = await Promise.all([
             Product.find(filter)
@@ -375,11 +388,7 @@ export const createProduct = async (req: Request, res: Response) => {
             });
         }
 
-        if (
-            typeof price !== "number" ||
-            !Number.isFinite(price) ||
-            price < 0
-        ) {
+        if (!isValidPrice(price)) {
             return res.status(400).json({
                 success: false,
                 message: "Price must be a valid non-negative number",
@@ -542,11 +551,7 @@ export const updateProduct = async (req: Request, res: Response) => {
         }
 
         if ("price" in body) {
-            if (
-                typeof body.price !== "number" ||
-                !Number.isFinite(body.price) ||
-                body.price < 0
-            ) {
+            if (!isValidPrice(body.price)) {
                 return res.status(400).json({
                     success: false,
                     message: "Price must be a valid non-negative number",
@@ -667,6 +672,8 @@ export const updateProduct = async (req: Request, res: Response) => {
 };
 
 export const deleteProduct = async (req: Request, res: Response) => {
+    const session = await mongoose.startSession();
+
     try {
         const { id } = req.params;
 
@@ -677,32 +684,67 @@ export const deleteProduct = async (req: Request, res: Response) => {
             });
         }
 
-        const product = await Product.findById(id);
+        let deleted = false;
+        let conflict = false;
+        let notFound = false;
 
-        if (!product) {
+        await session.withTransaction(async () => {
+            const product = await Product.findById(id).session(session);
+
+            if (!product) {
+                notFound = true;
+                return;
+            }
+
+            const orderReference = await Order.exists({
+                "items.product": product._id,
+            }).session(session);
+
+            if (orderReference) {
+                conflict = true;
+                return;
+            }
+
+            await Cart.updateMany(
+                { "items.product": product._id },
+                { $pull: { items: { product: product._id } } },
+                { session }
+            );
+
+            await Wishlist.updateMany(
+                { products: product._id },
+                { $pull: { products: product._id } },
+                { session }
+            );
+
+            await Product.deleteOne(
+                { _id: product._id },
+                { session }
+            );
+
+            deleted = true;
+        });
+
+        if (notFound) {
             return res.status(404).json({
                 success: false,
                 message: "Product not found",
             });
         }
 
-        const orderReference = await Order.exists({
-            "items.product": product._id,
-        });
-
-        if (orderReference) {
+        if (conflict) {
             return res.status(409).json({
                 success: false,
                 message: "Cannot delete a product referenced by an order",
             });
         }
 
-        await Cart.updateMany(
-            { "items.product": product._id },
-            { $pull: { items: { product: product._id } } }
-        );
-
-        await Product.findByIdAndDelete(product._id);
+        if (!deleted) {
+            return res.status(500).json({
+                success: false,
+                message: "Failed to delete product",
+            });
+        }
 
         return res.status(200).json({
             success: true,
@@ -715,5 +757,7 @@ export const deleteProduct = async (req: Request, res: Response) => {
             success: false,
             message: "Failed to delete product",
         });
+    } finally {
+        await session.endSession();
     }
 };

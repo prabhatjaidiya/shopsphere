@@ -12,6 +12,38 @@ interface WishlistProduct {
   images: string[];
 }
 
+const WishlistProductImage = ({
+  src,
+  name,
+}: {
+  src?: string;
+  name: string;
+}) => {
+  const [hasError, setHasError] = useState(false);
+
+  return (
+    <div className="flex aspect-[4/3] w-full items-center justify-center bg-gray-100 p-4">
+      {src && !hasError ? (
+        <img
+          src={src}
+          alt={name}
+          loading="lazy"
+          className="h-full w-full object-contain"
+          onError={() => setHasError(true)}
+        />
+      ) : (
+        <div
+          role="img"
+          aria-label={`${name} image unavailable`}
+          className="text-4xl"
+        >
+          📦
+        </div>
+      )}
+    </div>
+  );
+};
+
 const Wishlist = () => {
   const { token } = useAuth();
   const { toggleWishlist, pendingIds } = useWishlist();
@@ -151,21 +183,14 @@ const Wishlist = () => {
               >
                 <Link
                   to={`/products/${product._id}`}
-                  className="flex aspect-[4/3] items-center justify-center bg-gray-100 p-4"
+                  className="block"
                 >
-
-                  <div className="flex h-64 items-center justify-center overflow-hidden bg-gray-100 p-4">
-                    <img
-                      src={product.images?.[0] || "/placeholder.png"}
-                      alt={product.name}
-                      className="h-full w-full object-contain"
-                      onError={(event) => {
-                        event.currentTarget.style.visibility = "hidden";
-                      }}
-                    />
-                  </div>
+                  <WishlistProductImage
+                    key={product.images?.[0] || product._id}
+                    src={product.images?.[0]}
+                    name={product.name}
+                  />
                 </Link>
-
                 <div className="flex flex-1 flex-col p-4">
                   <Link
                     to={`/products/${product._id}`}

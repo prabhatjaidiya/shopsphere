@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { apiRequest } from "../lib/api";
 import { useAuth } from "../context/AuthContext";
@@ -34,12 +34,11 @@ const MyOrders = () => {
   const [error, setError] = useState("");
   const { token } = useAuth();
 
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     try {
       setLoading(true);
       setError("");
 
-      // TODO: Pass the JWT from your existing auth context.
       const response = await apiRequest<OrdersResponse>(
         "/api/orders/my-orders",
         {
@@ -58,11 +57,15 @@ const MyOrders = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [token]);
 
   useEffect(() => {
-    void fetchOrders();
-  }, []);
+    const timer = setTimeout(() => {
+      void fetchOrders();
+    }, 0);
+
+    return () => clearTimeout(timer);
+  }, [fetchOrders]);
 
   const formatPrice = (amount: number) =>
     new Intl.NumberFormat("en-IN", {

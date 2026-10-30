@@ -4,11 +4,42 @@ import { useCart } from "../context/CartContext";
 const Cart = () => {
   const {
     cart,
+    isLoading,
+    error,
     increaseQuantity,
     decreaseQuantity,
     removeFromCart,
     subtotal,
   } = useCart();
+
+  if (isLoading) {
+    return (
+      <main
+        role="status"
+        aria-live="polite"
+        className="flex min-h-[60vh] items-center justify-center px-4"
+      >
+        <p className="text-gray-600">Loading your cart...</p>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main className="flex min-h-[60vh] flex-col items-center justify-center gap-3 px-4 text-center">
+        <p role="alert" className="text-red-600">
+          {error}
+        </p>
+        <button
+          type="button"
+          onClick={() => window.location.reload()}
+          className="rounded-xl bg-gray-900 px-5 py-3 font-medium text-white hover:bg-gray-700"
+        >
+          Try again
+        </button>
+      </main>
+    );
+  }
 
   if (cart.length === 0) {
     return (
@@ -52,10 +83,16 @@ const Cart = () => {
                     <img
                       src={item.product.image}
                       alt={item.product.name}
+                      loading="lazy"
+                      onError={(event) => {
+                        event.currentTarget.onerror = null;
+                        event.currentTarget.src =
+                          "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 150'%3E%3Crect width='200' height='150' fill='%23f3f4f6'/%3E%3Ctext x='100' y='85' text-anchor='middle' font-size='48'%3E%F0%9F%93%A6%3C/text%3E%3C/svg%3E";
+                      }}
                       className="h-full w-full rounded-xl object-contain p-2"
                     />
                   ) : (
-                    <span className="text-3xl">📦</span>
+                    <span className="text-3xl" aria-hidden="true">📦</span>
                   )}
                 </div>
 

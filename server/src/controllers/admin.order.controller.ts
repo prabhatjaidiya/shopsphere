@@ -83,7 +83,7 @@ export const getAllOrders = async (
                 limit,
                 totalOrders,
                 totalPages: Math.ceil(totalOrders / limit),
-                hasNextPage: page * limit < totalOrders,
+                hasNextPage: skip + orders.length < totalOrders,
                 hasPreviousPage: page > 1,
             },
         });
@@ -150,7 +150,7 @@ export const updateOrderStatus = async (
                 message: "Invalid order ID",
             });
         }
-        
+
         const requestedStatus: unknown = req.body?.status;
 
         if (!mongoose.Types.ObjectId.isValid(orderId)) {
@@ -190,15 +190,31 @@ export const updateOrderStatus = async (
             });
         }
 
-        order.status = nextStatus;
-        await order.save();
+        const updatedOrder = await Order.findOneAndUpdate(
+            {
+                _id: orderId,
+                status: currentStatus,
+            },
+            {
+                $set: { status: nextStatus },
+            },
+            {
+                new: true,
+                runValidators: true,
+            }
+        ).populate("user", "name email");
 
-        await order.populate("user", "name email");
+        if (!updatedOrder) {
+            return res.status(409).json({
+                success: false,
+                message: "Order status changed. Please refresh and try again.",
+            });
+        }
 
         return res.status(200).json({
             success: true,
             message: "Order status updated successfully",
-            data: order,
+            data: updatedOrder,
         });
     } catch (error) {
         return next(error);

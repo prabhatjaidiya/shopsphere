@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import mongoose from "mongoose";
 import Cart from "../models/Cart.js";
-import "../models/Product.js";
+import Product from "../models/Product.js";
 
 export const getCart = async (req: Request, res: Response) => {
     try {
@@ -79,7 +79,7 @@ export const addToCart = async (req: Request, res: Response) => {
             });
         }
 
-        const product = await mongoose.model("Product").findById(productId);
+        const product = await Product.findById(productId);
 
         if (!product) {
             return res.status(404).json({

@@ -3,6 +3,7 @@ import {
   useContext,
   useEffect,
   useState,
+  useCallback,
   type ReactNode,
 } from "react";
 import { apiRequest } from "../lib/api";
@@ -85,7 +86,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const refreshCart = async () => {
+  const refreshCart = useCallback(async () => {
     if (!token || user?.role !== "customer") {
       setCart([]);
       setError(null);
@@ -111,11 +112,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [token, user?.role]);
 
   useEffect(() => {
-    void refreshCart();
-  }, [token, user?.role]);
+    const timer = setTimeout(() => {
+      void refreshCart();
+    }, 0);
+
+    return () => clearTimeout(timer);
+  }, [refreshCart]);
 
   const addToCart = async (product: Product, quantity: number) => {
     if (!token || user?.role !== "customer") {
@@ -224,6 +229,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useCart() {
   const context = useContext(CartContext);
 

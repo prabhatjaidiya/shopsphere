@@ -52,6 +52,14 @@ type RazorpayPaymentResponse = {
   razorpay_signature: string;
 };
 
+type RazorpayPaymentFailure = {
+  error?: {
+    description?: string;
+    code?: string;
+    reason?: string;
+  };
+};
+
 export default function Checkout() {
   const { cart, subtotal, isLoading, error } = useCart();
   const { token, user } = useAuth();
@@ -112,7 +120,7 @@ export default function Checkout() {
           : "Checkout validation failed. Please try again.";
 
       setCheckoutError(message);
-      throw new Error(message);
+      throw new Error(message, { cause: err });
     } finally {
       setIsValidating(false);
     }
@@ -151,7 +159,7 @@ export default function Checkout() {
       if (!paymentOrderResponse.success || !paymentOrder) {
         throw new Error(
           paymentOrderResponse.message ||
-            "Could not initialize payment."
+          "Could not initialize payment."
         );
       }
 
@@ -201,7 +209,7 @@ export default function Checkout() {
 
               throw new Error(
                 verificationResponse.message ||
-                  "Payment verification or order finalization failed."
+                "Payment verification or order finalization failed."
               );
             }
 
@@ -228,13 +236,15 @@ export default function Checkout() {
         },
       });
 
-      checkout.on("payment.failed", (paymentFailure: any) => {
-        setOrderError(
-          paymentFailure?.error?.description ||
+      checkout.on(
+        "payment.failed",
+        (paymentFailure: RazorpayPaymentFailure) => {
+          setOrderError(
+            paymentFailure?.error?.description ||
             "Payment failed. You can try again."
-        );
-        setIsCreatingOrder(false);
-      });
+          );
+          setIsCreatingOrder(false);
+        });
 
       checkout.open();
     } catch (err) {
@@ -334,12 +344,22 @@ export default function Checkout() {
               key={String(item.product.id)}
               className="flex gap-3"
             >
-              {item.product.image && (
+              {item.product.image ? (
                 <img
                   src={item.product.image}
                   alt={item.product.name}
+                  loading="lazy"
+                  onError={(event) => {
+                    event.currentTarget.onerror = null;
+                    event.currentTarget.src =
+                      "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23f3f4f6'/%3E%3Ctext x='50' y='60' text-anchor='middle' font-size='32'%3E%F0%9F%93%A6%3C/text%3E%3C/svg%3E";
+                  }}
                   className="h-16 w-16 rounded-lg object-cover"
                 />
+              ) : (
+                <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-gray-100 text-3xl">
+                  📦
+                </div>
               )}
 
               <div className="min-w-0 flex-1">

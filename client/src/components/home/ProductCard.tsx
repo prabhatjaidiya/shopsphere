@@ -81,7 +81,9 @@ const ProductCard = ({ product }: ProductCardProps) => {
                                 alt={name}
                                 loading="lazy"
                                 onError={(event) => {
-                                    event.currentTarget.style.display = "none";
+                                    event.currentTarget.onerror = null;
+                                    event.currentTarget.src =
+                                        "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 150'%3E%3Crect width='200' height='150' fill='%23f3f4f6'/%3E%3Ctext x='100' y='85' text-anchor='middle' font-size='48'%3E%F0%9F%9B%8D%EF%B8%8F%3C/text%3E%3C/svg%3E";
                                 }}
                                 className="block h-full w-full object-contain p-3"
                             />
@@ -92,7 +94,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
                                 </span>
                             </div>
                         )}
-
                         <button
                             type="button"
                             onClick={handleToggleWishlist}

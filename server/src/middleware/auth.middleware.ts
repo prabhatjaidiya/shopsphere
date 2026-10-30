@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import { JWT_SECRET } from "../config/env.js";
 import jwt from "jsonwebtoken";
 
 export const authenticate = (
@@ -30,12 +31,6 @@ export const authenticate = (
             return res.status(401).json({
                 message: "Authentication token missing",
             });
-        }
-
-        const JWT_SECRET = process.env.JWT_SECRET;
-
-        if (!JWT_SECRET) {
-            throw new Error("JWT_SECRET is not configured");
         }
 
         // Verify JWT

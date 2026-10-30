@@ -69,9 +69,12 @@ const FeaturedProducts = () => {
 
         {isLoading ? (
           <div
+            role="status"
+            aria-live="polite"
+            aria-label="Loading featured products"
             className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4"
-            aria-label="Loading products"
           >
+            <span className="sr-only">Loading featured products...</span>
             {Array.from({ length: 4 }).map((_, index) => (
               <div
                 key={index}

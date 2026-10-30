@@ -203,13 +203,14 @@ const ProductDetails = () => {
                   src={currentImage}
                   alt={product.name}
                   onError={(event) => {
+                    event.currentTarget.onerror = null;
                     event.currentTarget.style.display = "none";
                   }}
                   className="h-full w-full object-contain p-6 sm:p-10"
                 />
               ) : (
                 <div className="flex h-full flex-col items-center justify-center text-gray-400">
-                  <span className="text-6xl">📦</span>
+                  <span className="text-6xl" aria-hidden="true">📦</span>
                   <p className="mt-3 text-sm">Product image unavailable</p>
                 </div>
               )}
@@ -237,13 +238,18 @@ const ProductDetails = () => {
                     aria-label={`View product image ${index + 1}`}
                     aria-pressed={selectedImage === index}
                     className={`h-20 w-20 shrink-0 overflow-hidden rounded-xl border-2 bg-gray-50 ${selectedImage === index
-                        ? "border-gray-900"
-                        : "border-gray-200"
+                      ? "border-gray-900"
+                      : "border-gray-200"
                       }`}
                   >
                     <img
                       src={image}
                       alt={`${product.name} view ${index + 1}`}
+                      loading="lazy"
+                      onError={(event) => {
+                        event.currentTarget.onerror = null;
+                        event.currentTarget.style.visibility = "hidden";
+                      }}
                       className="h-full w-full object-contain p-2"
                     />
                   </button>
@@ -259,10 +265,10 @@ const ProductDetails = () => {
               </span>
 
               <span className={`rounded-full px-3 py-1 text-xs font-semibold ${isOutOfStock
-                  ? "bg-red-50 text-red-600"
-                  : stock <= 5
-                    ? "bg-amber-50 text-amber-700"
-                    : "bg-green-50 text-green-700"
+                ? "bg-red-50 text-red-600"
+                : stock <= 5
+                  ? "bg-amber-50 text-amber-700"
+                  : "bg-green-50 text-green-700"
                 }`}>
                 {isOutOfStock
                   ? "Out of stock"

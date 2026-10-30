@@ -159,7 +159,11 @@ const AdminOrders = () => {
   }, [token]);
 
   useEffect(() => {
-    void loadOrders(1);
+    const timer = setTimeout(() => {
+      void loadOrders(1);
+    }, 0);
+
+    return () => clearTimeout(timer);
   }, [loadOrders]);
 
   const viewOrder = async (orderId: string) => {
@@ -550,10 +554,10 @@ const AdminOrders = () => {
                   <div className="mt-4 flex items-center gap-3">
                     <span
                       className={`flex h-10 w-10 items-center justify-center rounded-xl ${selectedOrder.paymentStatus === "paid"
-                          ? "bg-emerald-50 text-emerald-700"
-                          : selectedOrder.paymentStatus === "failed"
-                            ? "bg-red-50 text-red-700"
-                            : "bg-amber-50 text-amber-700"
+                        ? "bg-emerald-50 text-emerald-700"
+                        : selectedOrder.paymentStatus === "failed"
+                          ? "bg-red-50 text-red-700"
+                          : "bg-amber-50 text-amber-700"
                         }`}
                     >
                       <span className="text-lg">
@@ -614,8 +618,8 @@ const AdminOrders = () => {
                             />
                             <p
                               className={`mt-2 text-xs capitalize ${complete
-                                  ? "font-semibold text-slate-900"
-                                  : "text-slate-400"
+                                ? "font-semibold text-slate-900"
+                                : "text-slate-400"
                                 }`}
                             >
                               {status}

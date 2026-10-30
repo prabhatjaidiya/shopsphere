@@ -2,10 +2,17 @@ import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import { JWT_SECRET } from "../config/env.js";
 
 const isValidEmail = (email: string): boolean =>
   email.length <= 254 &&
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+const isValidPasswordLength = (password: string): boolean => {
+  const byteLength = Buffer.byteLength(password, "utf8");
+
+  return byteLength >= 8 && byteLength <= 72;
+};
 
 const isPlainObject = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" &&
@@ -49,7 +56,7 @@ export const register = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Invalid email address" });
     }
 
-    if (password.length < 8 || password.length > 72) {
+    if (!isValidPasswordLength(password)) {
       return res.status(400).json({
         message: "Password must be between 8 and 72 characters",
       });
@@ -122,7 +129,7 @@ export const login = async (req: Request, res: Response) => {
       });
     }
 
-    if (!isValidEmail(normalizedEmail) || password.length > 72) {
+    if (!isValidEmail(normalizedEmail) || Buffer.byteLength(password, "utf8") > 72) {
       return res.status(400).json({
         message: "Invalid email or password format",
       });
@@ -147,12 +154,6 @@ export const login = async (req: Request, res: Response) => {
       return res.status(401).json({
         message: "Invalid email or password",
       });
-    }
-
-    const JWT_SECRET = process.env.JWT_SECRET;
-
-    if (!JWT_SECRET) {
-      throw new Error("JWT_SECRET is not configured");
     }
 
     const token = jwt.sign(
