@@ -19,15 +19,16 @@ app.use(helmet());
 app.use(express.json({ limit: "10kb" }));
 
 const allowedOrigins = [
-    "http://localhost:5173",
-    process.env.FRONTEND_URL,
+  "http://localhost:5173",
+  "https://shopsphere-coral-rho.vercel.app",
+  process.env.FRONTEND_URL,
 ].filter((origin): origin is string => Boolean(origin));
 
 app.use(
-    cors({
-        origin: allowedOrigins,
-        credentials: true,
-    })
+  cors({
+    origin: allowedOrigins,
+    credentials: true,
+  })
 );
 
 app.use("/api/auth", authRoutes);
