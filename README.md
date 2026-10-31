@@ -1,615 +1,404 @@
-# 🛍️ ShopSphere
+# ShopSphere — Full-Stack E-Commerce Platform
 
-A full-stack e-commerce platform built with **React, TypeScript, Tailwind CSS, Node.js, Express, and MongoDB**.
+A full-stack e-commerce application built with React, TypeScript, Node.js, Express, and MongoDB. ShopSphere provides a complete online shopping experience with secure authentication, product discovery, cart management, checkout, Razorpay payments, order tracking, and an admin dashboard.
 
-ShopSphere is being developed as a structured 28-day full-stack project, covering both the customer-facing shopping experience and an admin management system.
-
----
-
-## 📊 Project Status
-
-- **Project:** In Progress
-- **Overall Progress:** **11/28 days — 39.29%**
-- **Completed Days:** 1–11
-- **Current Milestone:** **Day 12 — Roles & Protected Routes**
-- **Next Milestone:** Day 13
-
-### Progress Tracker
-
-| Day | Milestone | Status |
-|---|---|---|
-| Day 1 | Project Planning & Architecture | ✅ Completed |
-| Day 2 | UI Design & UX Direction | ✅ Completed |
-| Day 3 | React Setup & Shared Components | ✅ Completed |
-| Day 4 | Customer Homepage | ✅ Completed |
-| Day 5 | Product Listing Page | ✅ Completed |
-| Day 6 | Product Details Page | ✅ Completed |
-| Day 7 | Cart & Frontend Review | ✅ Completed |
-| Day 8 | Express + TypeScript Setup | ✅ Completed |
-| Day 9 | MongoDB & Mongoose | ✅ Completed |
-| Day 10 | Product API | ✅ Completed |
-| Day 11 | Authentication & Users | ✅ Completed |
-| Day 12 | Roles & Protected Routes | 🟡 In Progress |
-
-
-### Current tracking
-
-**ShopSphere: 11/28 — 39.29%**
-
-**Day 11: 6/6 steps complete — 100%**
-
-**Day 12: Implementation and authorization testing complete.**
-
-Remaining: Day 12 learning notes, documentation update, and final verification.
-
-> Overall progress counts only fully completed roadmap days. Day 12 will count toward overall progress after all required steps are completed.
+<p align="center">
+  <a href="https://shopsphere-coral-rho.vercel.app/">
+    <strong>🚀 Live Demo</strong>
+  </a>
+  &nbsp; | &nbsp;
+  <a href="https://github.com/prabhatjaidiya/shopsphere">
+    <strong>📂 GitHub Repository</strong>
+  </a>
+</p>
 
 ---
 
-## 🔐 Day 11 — Authentication & Users
+## 📸 Screenshots
 
-### Completed
+### Home Page
 
-- User Mongoose model
-- User validation
-- Email uniqueness
-- Secure password handling
-- bcrypt password hashing
-- Registration API
-- Login API
-- Password verification
-- JWT generation
-- JWT verification
-- Authentication middleware
-- Bearer token handling
-- Protected route testing
-- Authentication error handling
+![ShopSphere Home Page](./screenshots/home.png)
 
-### Authentication Flow
+### Product Listing
 
-```text
-Registration
-    ↓
-Validate Input
-    ↓
-Check Existing User
-    ↓
-bcrypt.hash()
-    ↓
-Create User
-    ↓
-MongoDB
+![ShopSphere Product Listing](./screenshots/products.png)
 
----
+### Product Details
 
-# 🎯 Project Goals
+![ShopSphere Product Details](./screenshots/product-details.png)
 
-ShopSphere aims to provide a complete e-commerce experience with:
+### Shopping Cart
 
-### Customer Side
+![ShopSphere Shopping Cart](./screenshots/cart.png)
 
-- Browse products
-- Search and filter products
-- View product details
-- Manage shopping cart
-- User authentication
-- Checkout
-- Order management
-- Product reviews
+### Checkout
 
-### Admin Side
+![ShopSphere Checkout](./screenshots/checkout.png)
 
-- Dashboard
-- Product management
-- Category management
-- Order management
-- User management
-- Inventory management
+### Customer Orders
+
+![ShopSphere Customer Orders](./screenshots/orders.png)
+
+### Admin Product Management
+
+![ShopSphere Admin Product Management](./screenshots/admin-products.png)
+
+### Admin Order Management
+
+![ShopSphere Admin Order Management](./screenshots/admin-orders.png)
+
+> Replace the screenshot paths above with your actual screenshot filenames. If your screenshots are stored in another directory, update the paths accordingly.
 
 ---
 
-# 🛠️ Tech Stack
+## ✨ Features
 
-## Frontend
+### Customer Experience
 
-- React
-- TypeScript
-- Vite
-- Tailwind CSS
-- React Router
-- TanStack Query
+- User registration and login
+- JWT-based authentication
+- Product browsing and product details
+- Category-based product filtering
+- Product search and sorting
+- Price range filtering
+- Product ratings and reviews display
+- Shopping cart with quantity management
+- Wishlist functionality
+- Shipping address management
+- Checkout and order creation
+- Razorpay payment integration
+- Customer order history
+- Order details and status tracking
+- Responsive user interface
 
-## Backend
+### Admin Dashboard
 
-- Node.js
-- Express
-- TypeScript
-- REST API
-- Mongoose
-
-## Database
-
-- MongoDB
-- MongoDB Atlas
-
-## Authentication
-
-Planned:
-
-- JWT
-- bcrypt
+- Protected admin routes
 - Role-based authorization
+- Product management (CRUD)
+- Category management
+- Inventory and stock management
+- Admin order management
+- Order status updates
+- Customer order overview
 
-## Other Technologies
+### Security and Validation
 
-Planned:
-
-- Cloudinary
-- REST APIs
-- Vercel
-- Render / Railway
+- Password hashing with bcrypt
+- JWT authentication
+- Protected backend routes
+- Admin-only API authorization
+- Input validation and sanitization
+- Security headers and CORS configuration
+- Rate limiting for sensitive routes
+- Server-side payment verification
+- Duplicate payment verification protection
+- Server-side price and stock validation
 
 ---
 
-# 🏗️ Architecture
+## 🛠️ Tech Stack
 
-```text
-React Frontend
-      ↓
-HTTP Request
-      ↓
-Express REST API
-      ↓
-Routes
-      ↓
-Controllers
-      ↓
-Mongoose Models
-      ↓
-MongoDB Atlas
-      ↓
-JSON Response
-      ↓
-React Frontend
+| Technology | Purpose |
+|---|---|
+| React | Frontend UI |
+| TypeScript | Type safety |
+| Vite | Frontend development and build |
+| Tailwind CSS | Styling |
+| React Router | Client-side routing |
+| TanStack Query | Server-state management |
+| Node.js | Backend runtime |
+| Express.js | REST API |
+| MongoDB | Database |
+| Mongoose | MongoDB ODM |
+| JWT | Authentication |
+| bcrypt | Password hashing |
+| Razorpay | Payment gateway |
+| Vercel | Frontend deployment |
+| Render | Backend deployment |
+
+---
+
+## 🏗️ Architecture
+
+ShopSphere follows a client-server architecture.
+
+```mermaid
+flowchart TD
+    A[React + TypeScript Frontend]
+    B[Express + Node.js REST API]
+    C[MongoDB Atlas]
+    D[Razorpay Payment Gateway]
+
+    A -->|HTTP Requests| B
+    B -->|Database Operations| C
+    B -->|Payment Verification| D
 ```
 
----
+### Application Flow
 
-# 🔄 Request Flow
+1. The customer interacts with the React frontend.
+2. The frontend sends HTTP requests to the Express API.
+3. The backend validates requests and authenticates users.
+4. MongoDB stores users, products, carts, and orders.
+5. Razorpay handles payment processing.
+6. The backend verifies payment details before confirming an order.
 
-```text
-Client
-  ↓
-Express Server
-  ↓
-Middleware
-  ↓
-Route
-  ↓
-Controller
-  ↓
-Mongoose
-  ↓
-MongoDB Atlas
-  ↓
-Controller
-  ↓
-JSON Response
-  ↓
-Client
-```
+### Authentication and Authorization
+
+ShopSphere uses JWT-based authentication.
+
+- Customers access their own cart, wishlist, and orders.
+- Protected routes require authentication.
+- Admin routes require an authenticated admin user.
+- Backend authorization ensures customers cannot access admin-only operations.
+- Payment verification is performed on the server.
 
 ---
 
-# 📁 Project Structure
+## 📁 Project Structure
+
+The application is organized into frontend and backend applications.
 
 ```text
-shopsphere/
-│
-├── client/                         # React + TypeScript frontend
-│   │
+ShopSphere/
+├── frontend/
 │   ├── src/
-│   │   ├── assets/
 │   │   ├── components/
 │   │   ├── pages/
-│   │   ├── context/
 │   │   ├── hooks/
 │   │   ├── services/
+│   │   ├── context/
 │   │   ├── types/
-│   │   ├── utils/
-│   │   ├── routes/
-│   │   ├── App.tsx
-│   │   ├── main.tsx
-│   │   └── index.css
-│   │
+│   │   └── ...
+│   ├── public/
 │   ├── package.json
-│   ├── tsconfig.json
-│   └── vite.config.ts
+│   └── ...
 │
-├── server/                         # Node.js + Express + TypeScript backend
-│   │
+├── backend/
 │   ├── src/
-│   │   ├── config/
-│   │   │   └── db.ts
-│   │   │
-│   │   ├── models/
-│   │   │   ├── Product.ts
-│   │   │   ├── Category.ts
-│   │   │   └── User.ts
-│   │   │
 │   │   ├── controllers/
-│   │   │   ├── product.controller.ts
-│   │   │   └── auth.controller.ts
-│   │   │
 │   │   ├── routes/
-│   │   │   ├── product.routes.ts
-│   │   │   └── auth.routes.ts
-│   │   │
+│   │   ├── models/
 │   │   ├── middleware/
-│   │   │   └── auth.middleware.ts
-│   │   │
-│   │   ├── types/
-│   │   │   └── express.d.ts
-│   │   │
-│   │   ├── app.ts
-│   │   ├── server.ts
-│   │   ├── test-bcrypt.ts
-│   │   └── test-jwt.ts
-│   │
-│   ├── .env
-│   ├── .env.example
+│   │   ├── config/
+│   │   ├── utils/
+│   │   └── ...
 │   ├── package.json
-│   └── tsconfig.json
+│   └── ...
 │
 ├── docs/
-│   └── UI-DESIGN.md
+│   ├── API.md
+│   └── ARCHITECTURE.md
 │
-├── README.md
-├── notes.md
-├── .gitignore
-└── package.json
+├── screenshots/
+└── README.md
 ```
 
-> The structure above will expand as new roadmap milestones are implemented.
+> Adjust this structure to match the actual folders in your repository.
 
 ---
 
-# 🗄️ Database Design
+## ⚙️ Getting Started
 
-MongoDB Atlas currently contains the foundation for the ShopSphere database layer.
+Follow these instructions to run ShopSphere locally.
 
-```text
-MongoDB Atlas
-     ↓
-ShopSphere Database
-     │
-     ├── products
-     │
-     └── categories
-```
+### Prerequisites
 
-### Product → Category Relationship
+Install the following:
 
-```text
-Product
-   │
-   └── category: ObjectId
-                    ↓
-                 Category
-```
+- Node.js
+- npm
+- Git
+- MongoDB Atlas account or local MongoDB instance
+- Razorpay account for payment testing
 
-Products reference categories using MongoDB `ObjectId`.
-
-Mongoose can later populate this relationship when required.
-
----
-
-# 📦 Product Model
-
-The current Product model supports:
-
-- Name
-- Description
-- Price
-- Category
-- Stock
-- Images
-- Rating
-- Validation
-- Automatic timestamps
-
-Validation includes:
-
-```text
-Price  ≥ 0
-Stock  ≥ 0
-Rating  0–5
-```
-
-Mongoose automatically maintains:
-
-```text
-createdAt
-updatedAt
-```
-
----
-
-# 🏷️ Category Model
-
-The Category model currently supports:
-
-- Name
-- Description
-- Required name validation
-- Unique category names
-- String trimming
-- Automatic timestamps
-
----
-
-# 🔌 MongoDB Connection
-
-MongoDB is connected through Mongoose.
-
-```text
-server.ts
-    ↓
-connectDB()
-    ↓
-Mongoose
-    ↓
-MongoDB Atlas
-```
-
-The MongoDB connection string is stored in an environment variable:
-
-```env
-MONGODB_URI=your_mongodb_connection_string
-```
-
-Sensitive environment variables are not committed to Git.
-
----
-
-# 🧪 Database Testing
-
-The Day 9 database layer has been tested for:
-
-- MongoDB connection
-- Category creation
-- Product creation
-- Product retrieval
-- Product update
-- Product deletion
-- Validation errors
-- ObjectId relationship
-- Automatic timestamps
-- Test data cleanup
-
-Example validation tests successfully reject:
-
-```text
-Negative price
-Negative stock
-Rating greater than 5
-```
-
----
-
-# 🚀 Local Development
-
-## Clone the repository
+### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/prabhatjaidiya/shopsphere.git
+
 cd shopsphere
 ```
 
-## Install dependencies
-
-### Frontend
+### 2. Install Backend Dependencies
 
 ```bash
-cd client
+cd backend
+
 npm install
 ```
 
-### Backend
+### 3. Configure Backend Environment Variables
 
-```bash
-cd server
-npm install
-```
-
----
-
-# 🔐 Environment Variables
-
-Create a `.env` file inside the `server` directory.
+Create a `.env` file inside the backend directory.
 
 ```env
 PORT=5000
 MONGODB_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+RAZORPAY_KEY_ID=your_razorpay_key_id
+RAZORPAY_KEY_SECRET=your_razorpay_key_secret
 ```
 
-Never commit the real `.env` file.
+Use the exact environment variable names expected by your backend configuration.
 
-Use `.env.example` to document required variables.
-
----
-
-# ▶️ Run the Backend
+### 4. Start the Backend
 
 ```bash
-cd server
 npm run dev
 ```
 
-Expected output:
+The backend runs locally at:
 
 ```text
-MongoDB connected successfully
-ShopSphere API running on port 5000
+http://localhost:5000
 ```
 
----
+### 5. Install Frontend Dependencies
 
-# 🏗️ Build the Backend
+Open a new terminal.
 
 ```bash
-cd server
-npm run build
+cd frontend
+
+npm install
 ```
 
-The TypeScript build should complete without errors.
+### 6. Configure Frontend Environment Variables
 
----
+Create a `.env` file inside the frontend directory.
 
-# 📚 Development Roadmap
+```env
+VITE_API_URL=http://localhost:5000
+```
 
-## Phase 1 — Planning & Frontend
+For production, configure the frontend with your deployed backend API URL.
 
-- [x] Day 1 — Project Planning & Architecture
-- [x] Day 2 — UI Design & UX Direction
-- [x] Day 3 — React Setup & Shared Components
-- [x] Day 4 — Customer Homepage
-- [x] Day 5 — Product Listing Page
-- [x] Day 6 — Product Details Page
-- [x] Day 7 — Cart & Frontend Review
+### 7. Start the Frontend
 
-## Phase 2 — Backend Foundation
+```bash
+npm run dev
+```
 
-- [x] Day 8 — Express + TypeScript Setup
-- [x] Day 9 — MongoDB & Mongoose
-- [x] Day 10 — Product API
-- [x] Day 11 — Category API
-- [ ] Day 12 — Authentication
-- [ ] Day 13 — Authorization
-- [ ] Day 14 — Backend Review
-
-## Phase 3 — Full-Stack Integration
-
-- [ ] API integration
-- [ ] Authentication integration
-- [ ] Product management
-- [ ] Cart synchronization
-- [ ] Checkout
-- [ ] Orders
-
-## Phase 4 — Admin & Production
-
-- [ ] Admin dashboard
-- [ ] Inventory management
-- [ ] Reviews
-- [ ] Image uploads
-- [ ] Error handling
-- [ ] Testing
-- [ ] Deployment
-- [ ] Final optimization
-
----
-
-# 🧠 Key Concepts Practiced
-
-During the first nine days, the project has covered:
-
-- React component architecture
-- React Router
-- Tailwind CSS
-- State management
-- Cart management
-- Express
-- TypeScript
-- REST API foundations
-- Environment variables
-- MongoDB
-- MongoDB Atlas
-- Mongoose
-- Schemas
-- Models
-- ObjectId
-- Validation
-- Timestamps
-- CRUD operations
-- Git workflow
-
----
-
-# 📌 Current Focus
-
-## Day 12 — Roles & Protected Routes
-
-Day 12 builds role-based authorization on top of the authentication foundation completed on Day 11.
-
-### Authorization Features
-
-- Defined two supported roles: `customer` and `admin`.
-- Added reusable `authorizeRoles` middleware.
-- Validated JWT payloads, including non-empty user IDs and supported role values.
-- Restricted the `GET /api/admin/check` test endpoint to authenticated admins.
-- Preserved public access to product listing and existing product details endpoints.
-- Kept public registration from accepting client-supplied roles.
-
-### Authorization Flow
+The frontend runs locally at:
 
 ```text
-Incoming Request
-      ↓
-Authentication Middleware
-      ↓
-Verify JWT and Validate Claims
-      ↓
-Attach Authenticated User
-      ↓
-Role Authorization Middleware
-      ↓
-Check Allowed Roles
-      ↓
-401 — Missing or Invalid Authentication
-403 — Insufficient Permissions
-200 — Authorized Request
+http://localhost:5173
 ```
-
-### Verification Results
-
-| Test | Expected Result | Result |
-|---|---|---|
-| Missing token on admin endpoint | 401 Unauthorized | Passed |
-| Customer token on admin endpoint | 403 Forbidden | Passed |
-| Admin-role test token on admin endpoint | 200 OK | Passed |
-| Unsupported JWT role | 401 Unauthorized | Passed |
-| Existing protected route with customer token | 200 OK | Passed |
-| Public product listing without a token | Successful response | Passed |
-| TypeScript type checking | No errors | Passed |
-| Production build | Successful | Passed |
-
-### Git Checkpoint
-
-- **Commit:** `2b7a1f4`
-- **Message:** `feat: add role-based authorization middleware`
-- **Repository:** Implementation committed as `2b7a1f4`; README documentation changes are pending commit.
-
-### Remaining Work
-
-- Finalize Day 12 learning notes and documentation.
-- Verify the final README and Git status.
-- Mark Day 12 complete only after all required steps are confirmed.
-
-> Security note: The admin test used a temporary, locally signed JWT to validate role-checking behavior. A real database-backed admin login has not yet been tested, and authorization based on JWT role claims does not automatically reflect later role changes in MongoDB.
 
 ---
 
-# 👨‍💻 Developer
+## 🔑 Environment Variables
+
+### Backend
+
+| Variable | Description |
+|---|---|
+| `PORT` | Backend server port |
+| `MONGODB_URI` | MongoDB connection string |
+| `JWT_SECRET` | Secret used for JWT signing |
+| `RAZORPAY_KEY_ID` | Razorpay API key ID |
+| `RAZORPAY_KEY_SECRET` | Razorpay API secret |
+
+### Frontend
+
+| Variable | Description |
+|---|---|
+| `VITE_API_URL` | Backend API base URL |
+
+> Never commit `.env` files, database credentials, JWT secrets, or payment gateway secrets to GitHub.
+
+---
+
+## 💳 Payment Integration
+
+ShopSphere integrates Razorpay for online payments.
+
+### Payment Workflow
+
+1. The customer adds products to the cart.
+2. The customer enters shipping information.
+3. The backend validates product prices and stock.
+4. The backend creates a payment order.
+5. The customer completes payment through Razorpay.
+6. The backend verifies payment details.
+7. The order is confirmed after successful verification.
+8. Inventory is updated and the cart is cleared.
+
+Payment verification is performed on the backend to avoid trusting client-side payment information.
+
+---
+
+## 🚀 Deployment
+
+ShopSphere is deployed using the following services.
+
+| Service | Purpose |
+|---|---|
+| Vercel | Frontend hosting |
+| Render | Backend hosting |
+| MongoDB Atlas | Database hosting |
+
+### Live Application
+
+- **Frontend:** https://shopsphere-coral-rho.vercel.app/
+- **Backend API:** https://shopsphere-22ek.onrender.com
+- **GitHub:** https://github.com/prabhatjaidiya/shopsphere
+
+The frontend communicates with the deployed backend through the configured API URL.
+
+---
+
+## 🧪 Testing
+
+The project includes testing and verification of the main application workflows.
+
+- Registration and login
+- Cart add and remove operations
+- Checkout and order creation
+- Order history
+- Payment flow
+- Admin dashboard access
+- Admin-only backend authorization
+- Unauthorized request handling
+- Customer access restrictions
+- Regression testing
+
+The reported API regression tests passed during the project testing phase.
+
+---
+
+## 🎯 Project Goals
+
+ShopSphere was developed to demonstrate practical full-stack engineering skills, including:
+
+- Building a React application using TypeScript
+- Designing RESTful APIs
+- Implementing authentication and authorization
+- Working with MongoDB and Mongoose
+- Integrating a payment gateway
+- Building a complete e-commerce workflow
+- Deploying a full-stack application
+- Testing and securing backend APIs
+
+---
+
+## 👨‍💻 Author
 
 **Prabhat Jaidiya**
 
 B.Sc. Mathematical Science — University of Delhi
 
-Aspiring Full-Stack Developer
+Full-Stack Developer
+
+### Connect
+
+- GitHub: [@prabhatjaidiya](https://github.com/prabhatjaidiya)
 
 ---
 
-# 📄 License
+## 📄 License
 
-This project is being developed as a personal learning and portfolio project.
+This project is available for educational and portfolio purposes.
