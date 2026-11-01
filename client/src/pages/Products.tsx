@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { apiRequest } from "../lib/api";
 import ProductCard from "../components/home/ProductCard";
 import type { Product } from "../data/products";
@@ -72,11 +73,10 @@ const FilterControls = ({
             key={item}
             type="button"
             onClick={() => handleCategoryChange(item)}
-            className={`flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-sm transition ${
-              category === item
-                ? "bg-slate-900 font-semibold text-white"
-                : "text-slate-600 hover:bg-slate-100"
-            }`}
+            className={`flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-sm transition ${category === item
+              ? "bg-slate-900 font-semibold text-white"
+              : "text-slate-600 hover:bg-slate-100"
+              }`}
           >
             {item}
             {category === item && (
@@ -168,6 +168,7 @@ const FilterControls = ({
 
 const Products = () => {
   const [search, setSearch] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
   const [category, setCategory] = useState("All");
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(500000);
@@ -298,6 +299,26 @@ const Products = () => {
     retryCount,
   ]);
 
+  // Sync category from URL
+  useEffect(() => {
+    if (categoryData.length === 0) return;
+
+    const categoryFromUrl = searchParams.get("category");
+
+    if (!categoryFromUrl) {
+      setCategory("All");
+      return;
+    }
+
+    const matchedCategory = categoryData.find(
+      (item) =>
+        item.name.toLowerCase() === categoryFromUrl.toLowerCase()
+    );
+
+    setCategory(matchedCategory?.name ?? "All");
+    setPage(1);
+  }, [searchParams, categoryData]);
+
   const displayProducts: Product[] = products.map((product) => ({
     ...product,
     id: product._id,
@@ -312,6 +333,8 @@ const Products = () => {
     setSort("popular");
     setPage(1);
     setIsFilterOpen(false);
+
+    setSearchParams({});
   };
 
   const resetPrice = () => {
@@ -324,6 +347,16 @@ const Products = () => {
     setCategory(item);
     setPage(1);
     setIsFilterOpen(false);
+
+    const newSearchParams = new URLSearchParams(searchParams);
+
+    if (item === "All") {
+      newSearchParams.delete("category");
+    } else {
+      newSearchParams.set("category", item);
+    }
+
+    setSearchParams(newSearchParams);
   };
 
   const handleMinPriceChange = (value: number) => {
@@ -470,11 +503,10 @@ const Products = () => {
                   key={item}
                   type="button"
                   onClick={() => handleCategoryChange(item)}
-                  className={`shrink-0 rounded-full px-5 py-2.5 text-sm font-semibold transition ${
-                    category === item
-                      ? "bg-slate-900 text-white"
-                      : "border border-slate-200 bg-white text-slate-600 hover:border-slate-400"
-                  }`}
+                  className={`shrink-0 rounded-full px-5 py-2.5 text-sm font-semibold transition ${category === item
+                    ? "bg-slate-900 text-white"
+                    : "border border-slate-200 bg-white text-slate-600 hover:border-slate-400"
+                    }`}
                 >
                   {item}
                 </button>
@@ -579,11 +611,10 @@ const Products = () => {
                           page === pageNumber ? "page" : undefined
                         }
                         onClick={() => setPage(pageNumber)}
-                        className={`h-11 min-w-11 rounded-xl px-3 text-sm font-bold transition ${
-                          page === pageNumber
-                            ? "bg-slate-900 text-white"
-                            : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
-                        }`}
+                        className={`h-11 min-w-11 rounded-xl px-3 text-sm font-bold transition ${page === pageNumber
+                          ? "bg-slate-900 text-white"
+                          : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+                          }`}
                       >
                         {pageNumber}
                       </button>

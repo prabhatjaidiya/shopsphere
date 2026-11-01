@@ -30,13 +30,19 @@ const HeroSection = () => {
                 </div>
 
                 {/* Visual */}
-                <div className="flex min-h-72 items-center justify-center rounded-2xl bg-gray-200 p-8 sm:min-h-96">
-                    <div className="text-center">
-                        <div className="text-7xl">🛍️</div>
-                        <p className="mt-4 text-xl font-semibold text-gray-700">
-                            ShopSphere
-                        </p>
-                        <p className="mt-1 text-gray-500">
+                <div className="relative min-h-72 overflow-hidden rounded-2xl bg-gray-200 sm:min-h-96">
+                    <img
+                        src="https://images.unsplash.com/photo-1607082349566-187342175e2f?auto=format&fit=crop&w=1200&q=85"
+                        alt="Modern shopping collection with products"
+                        className="absolute inset-0 h-full w-full object-cover"
+                        loading="eager"
+                    />
+
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+
+                    <div className="absolute bottom-6 left-6 text-white">
+                        <p className="text-xl font-semibold">ShopSphere</p>
+                        <p className="mt-1 text-sm text-white/90">
                             Everything you need, in one place.
                         </p>
                     </div>

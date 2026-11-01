@@ -5,21 +5,25 @@ const categories = [
         id: 1,
         name: "Electronics",
         icon: "🎧",
+        to: "/products?category=Electronics",
     },
     {
         id: 2,
         name: "Fashion",
         icon: "👕",
+        to: "/products?category=Fashion",
     },
     {
         id: 3,
         name: "Shoes",
         icon: "👟",
+        to: "/products?category=Shoes",
     },
     {
         id: 4,
         name: "Accessories",
         icon: "👜",
+        to: "/products?category=Accessories",
     },
 ];
 
@@ -42,6 +46,7 @@ const CategorySection = () => {
                         key={category.id}
                         name={category.name}
                         icon={category.icon}
+                        to={category.to}
                     />
                 ))}
             </div>

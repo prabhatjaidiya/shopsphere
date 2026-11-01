@@ -1,16 +1,22 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Footer = () => {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
   return (
     <footer className="border-t border-gray-200 bg-gray-950 text-gray-300">
       <div className="mx-auto max-w-7xl px-6 py-12 lg:px-8">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
           <div>
-            <Link
-              to="/"
-              className="text-2xl font-bold text-white"
-            >
+            <Link to="/" className="text-2xl font-bold text-white">
               ShopSphere
             </Link>
 
@@ -28,28 +34,19 @@ const Footer = () => {
 
             <ul className="mt-4 space-y-3 text-sm">
               <li>
-                <Link
-                  to="/products"
-                  className="transition hover:text-white"
-                >
+                <Link to="/products" className="transition hover:text-white">
                   All Products
                 </Link>
               </li>
 
               <li>
-                <Link
-                  to="/cart"
-                  className="transition hover:text-white"
-                >
+                <Link to="/cart" className="transition hover:text-white">
                   Cart
                 </Link>
               </li>
 
               <li>
-                <Link
-                  to="/orders"
-                  className="transition hover:text-white"
-                >
+                <Link to="/orders" className="transition hover:text-white">
                   My Orders
                 </Link>
               </li>
@@ -64,22 +61,28 @@ const Footer = () => {
 
             <ul className="mt-4 space-y-3 text-sm">
               <li>
-                <Link
-                  to="/login"
-                  className="transition hover:text-white"
-                >
+                <Link to="/login" className="transition hover:text-white">
                   Login
                 </Link>
               </li>
 
               <li>
-                <Link
-                  to="/register"
-                  className="transition hover:text-white"
-                >
+                <Link to="/register" className="transition hover:text-white">
                   Create Account
                 </Link>
               </li>
+
+              {user && (
+                <li>
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="cursor-pointer text-left text-red-400 transition hover:text-red-300"
+                  >
+                    Logout
+                  </button>
+                </li>
+              )}
             </ul>
           </div>
 
@@ -103,17 +106,11 @@ const Footer = () => {
           </p>
 
           <div className="flex gap-6">
-            <Link
-              to="/"
-              className="transition hover:text-white"
-            >
+            <Link to="/" className="transition hover:text-white">
               Privacy Policy
             </Link>
 
-            <Link
-              to="/"
-              className="transition hover:text-white"
-            >
+            <Link to="/" className="transition hover:text-white">
               Terms & Conditions
             </Link>
           </div>
